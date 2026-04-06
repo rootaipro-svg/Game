@@ -1,1 +1,171 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة أبطال العائلة</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #1a2a6c, #b21f1f, #fdbb2d);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            color: white;
+        }
+
+        h1 { margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 80vh;
+            background: rgba(255, 255, 255, 0.1);
+            border: 3px solid #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        #basket {
+            position: absolute;
+            bottom: 20px;
+            width: 100px;
+            height: 20px;
+            background: #00ffcc;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #00ffcc;
+            transition: 0.1s;
+        }
+
+        .falling-name {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 5px #000;
+            user-select: none;
+        }
+
+        #score-board {
+            font-size: 24px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .instruction {
+            font-size: 14px;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>لعبة أبطال العائلة 🚀</h1>
+    <div id="score-board">النقاط: <span id="score">0</span></div>
+    
+    <div id="game-container" id="gameArea">
+        <div id="basket"></div>
+    </div>
+
+    <p class="instruction">حرك الماوس أو اصبعك يميناً ويساراً لالتقاط الأسماء!</p>
+
+    <script>
+        const container = document.getElementById('game-container');
+        const basket = document.getElementById('basket');
+        const scoreElement = document.getElementById('score');
+        
+        const names = ['يماني', 'صالح', 'عبدالله'];
+        let score = 0;
+        let gameActive = true;
+
+        // تحريك السلة مع الماوس أو اللمس
+        container.addEventListener('mousemove', (e) => {
+            let rect = container.getBoundingClientRect();
+            let x = e.clientX - rect.left - (basket.offsetWidth / 2);
+            
+            // التأكد من بقاء السلة داخل الحاوية
+            if (x < 0) x = 0;
+            if (x > container.offsetWidth - basket.offsetWidth) x = container.offsetWidth - basket.offsetWidth;
+            
+            basket.style.left = x + 'px';
+        });
+
+        // دعم اللمس للجوال
+        container.addEventListener('touchmove', (e) => {
+            let rect = container.getBoundingClientRect();
+            let touch = e.touches[0];
+            let x = touch.clientX - rect.left - (basket.offsetWidth / 2);
+            
+            if (x < 0) x = 0;
+            if (x > container.offsetWidth - basket.offsetWidth) x = container.offsetWidth - basket.offsetWidth;
+            
+            basket.style.left = x + 'px';
+            e.preventDefault();
+        }, {passive: false});
+
+        function createFallingName() {
+            if (!gameActive) return;
+
+            const nameElement = document.createElement('div');
+            nameElement.classList.add('falling-name');
+            
+            // اختيار اسم عشوائي من الثلاثة
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            nameElement.innerText = randomName;
+            
+            // تحديد مكان السقوط العشوائي
+            const startX = Math.random() * (container.offsetWidth - 50);
+            nameElement.style.left = startX + 'px';
+            nameElement.style.top = '-50px';
+            
+            container.appendChild(nameElement);
+
+            let posY = -50;
+            let speed = 2 + Math.random() * 3; // سرعة عشوائية بسيطة
+
+            function fall() {
+                posY += speed;
+                nameElement.style.top = posY + 'px';
+
+                // كشف التصادم مع السلة
+                const basketRect = basket.getBoundingClientRect();
+                const nameRect = nameElement.getBoundingClientRect();
+
+                if (
+                    nameRect.bottom >= basketRect.top &&
+                    nameRect.right >= basketRect.left &&
+                    nameRect.left <= basketRect.right &&
+                    nameRect.top <= basketRect.bottom
+                ) {
+                    score++;
+                    scoreElement.innerText = score;
+                    nameElement.remove();
+                    return;
+                }
+
+                // حذف الاسم إذا خرج من الشاشة
+                if (posY > container.offsetHeight) {
+                    nameElement.remove();
+                } else {
+                    requestAnimationFrame(fall);
+                }
+            }
+
+            requestAnimationFrame(fall);
+        }
+
+        // إنشاء اسم جديد كل ثانية ونصف
+        setInterval(createFallingName, 1500);
+
+    </script>
+</body>
+</html>
