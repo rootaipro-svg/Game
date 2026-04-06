@@ -1,171 +1,200 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لعبة أبطال العائلة</title>
+    <title>تحدي الأبطال الثلاثة</title>
     <style>
+        :root {
+            --yamani-color: #ff4757;
+            --saleh-color: #2ed573;
+            --abdullah-color: #1e90ff;
+        }
+
         body {
             margin: 0;
-            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #2f3542;
+            color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             height: 100vh;
-            background: linear-gradient(to bottom, #1a2a6c, #b21f1f, #fdbb2d);
-            font-family: 'Arial', sans-serif;
             overflow: hidden;
-            color: white;
         }
 
-        h1 { margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        h1 { margin: 10px; font-size: 24px; text-shadow: 2px 2px 5px #000; }
 
-        #game-container {
+        #race-track {
+            width: 90%;
+            max-width: 800px;
+            flex-grow: 1;
+            background: #57606f;
+            border: 4px solid #fff;
+            border-radius: 20px;
             position: relative;
-            width: 100%;
-            max-width: 600px;
-            height: 80vh;
-            background: rgba(255, 255, 255, 0.1);
-            border: 3px solid #fff;
-            border-radius: 15px;
-            overflow: hidden;
-            cursor: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            padding: 20px 0;
+            margin-bottom: 20px;
         }
 
-        #basket {
+        .lane {
+            height: 80px;
+            border-bottom: 2px dashed rgba(255,255,255,0.2);
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .finish-line {
             position: absolute;
-            bottom: 20px;
-            width: 100px;
-            height: 20px;
-            background: #00ffcc;
+            right: 50px;
+            top: 0;
+            bottom: 0;
+            width: 10px;
+            background: repeating-linear-gradient(45deg, #fff, #fff 10px, #000 10px, #000 20px);
+        }
+
+        .player {
+            position: absolute;
+            left: 20px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: left 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        #p1 { background: var(--yamani-color); }
+        #p2 { background: var(--saleh-color); }
+        #p3 { background: var(--abdullah-color); }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
             border-radius: 10px;
-            box-shadow: 0 0 15px #00ffcc;
-            transition: 0.1s;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            active: transform: scale(0.9);
         }
 
-        .falling-name {
+        #btn1 { background: var(--yamani-color); }
+        #btn2 { background: var(--saleh-color); }
+        #btn3 { background: var(--abdullah-color); }
+
+        #reset-btn {
             position: absolute;
-            font-size: 24px;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 1px 1px 5px #000;
-            user-select: none;
+            top: 10px;
+            left: 10px;
+            padding: 5px 15px;
+            background: #ffa502;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        #score-board {
-            font-size: 24px;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        .instruction {
-            font-size: 14px;
-            margin-top: 5px;
-            opacity: 0.8;
+        /* رسالة الفوز */
+        #winner-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
         }
     </style>
 </head>
 <body>
 
-    <h1>لعبة أبطال العائلة 🚀</h1>
-    <div id="score-board">النقاط: <span id="score">0</span></div>
-    
-    <div id="game-container" id="gameArea">
-        <div id="basket"></div>
+    <button id="reset-btn" onclick="resetGame()">إعادة السباق 🔄</button>
+    <h1>🚀 تحدي سباق الأبطال الثلاثة</h1>
+
+    <div id="race-track">
+        <div class="finish-line"></div>
+        
+        <div class="lane">
+            <div id="p1" class="player">يماني</div>
+        </div>
+        <div class="lane">
+            <div id="p2" class="player">صالح</div>
+        </div>
+        <div class="lane">
+            <div id="p3" class="player">عبدالله</div>
+        </div>
     </div>
 
-    <p class="instruction">حرك الماوس أو اصبعك يميناً ويساراً لالتقاط الأسماء!</p>
+    <div class="controls">
+        <button id="btn1" class="btn" onmousedown="move(1)">يماني (A)</button>
+        <button id="btn2" class="btn" onmousedown="move(2)">صالح (S)</button>
+        <button id="btn3" class="btn" onmousedown="move(3)">عبدالله (D)</button>
+    </div>
+
+    <p>يمكن اللعب بالضغط على الأزرار الملونة، أو لوحة المفاتيح (A, S, D)</p>
+
+    <div id="winner-overlay">
+        <h2 id="winner-text" style="font-size: 40px;"></h2>
+        <button class="btn" style="background: #2ed573;" onclick="resetGame()">لعب مرة أخرى 🏁</button>
+    </div>
 
     <script>
-        const container = document.getElementById('game-container');
-        const basket = document.getElementById('basket');
-        const scoreElement = document.getElementById('score');
-        
-        const names = ['يماني', 'صالح', 'عبدالله'];
-        let score = 0;
-        let gameActive = true;
+        const positions = { 1: 20, 2: 20, 3: 20 };
+        const step = 30; // المسافة التي يقطعها البطل في كل ضغطة
+        let gameFinished = false;
 
-        // تحريك السلة مع الماوس أو اللمس
-        container.addEventListener('mousemove', (e) => {
-            let rect = container.getBoundingClientRect();
-            let x = e.clientX - rect.left - (basket.offsetWidth / 2);
-            
-            // التأكد من بقاء السلة داخل الحاوية
-            if (x < 0) x = 0;
-            if (x > container.offsetWidth - basket.offsetWidth) x = container.offsetWidth - basket.offsetWidth;
-            
-            basket.style.left = x + 'px';
-        });
+        function move(playerNum) {
+            if (gameFinished) return;
 
-        // دعم اللمس للجوال
-        container.addEventListener('touchmove', (e) => {
-            let rect = container.getBoundingClientRect();
-            let touch = e.touches[0];
-            let x = touch.clientX - rect.left - (basket.offsetWidth / 2);
-            
-            if (x < 0) x = 0;
-            if (x > container.offsetWidth - basket.offsetWidth) x = container.offsetWidth - basket.offsetWidth;
-            
-            basket.style.left = x + 'px';
-            e.preventDefault();
-        }, {passive: false});
+            const trackWidth = document.getElementById('race-track').offsetWidth;
+            const finishPos = trackWidth - 150; // خط النهاية
 
-        function createFallingName() {
-            if (!gameActive) return;
+            positions[playerNum] += step;
+            const playerElement = document.getElementById('p' + playerNum);
+            playerElement.style.left = positions[playerNum] + 'px';
 
-            const nameElement = document.createElement('div');
-            nameElement.classList.add('falling-name');
-            
-            // اختيار اسم عشوائي من الثلاثة
-            const randomName = names[Math.floor(Math.random() * names.length)];
-            nameElement.innerText = randomName;
-            
-            // تحديد مكان السقوط العشوائي
-            const startX = Math.random() * (container.offsetWidth - 50);
-            nameElement.style.left = startX + 'px';
-            nameElement.style.top = '-50px';
-            
-            container.appendChild(nameElement);
-
-            let posY = -50;
-            let speed = 2 + Math.random() * 3; // سرعة عشوائية بسيطة
-
-            function fall() {
-                posY += speed;
-                nameElement.style.top = posY + 'px';
-
-                // كشف التصادم مع السلة
-                const basketRect = basket.getBoundingClientRect();
-                const nameRect = nameElement.getBoundingClientRect();
-
-                if (
-                    nameRect.bottom >= basketRect.top &&
-                    nameRect.right >= basketRect.left &&
-                    nameRect.left <= basketRect.right &&
-                    nameRect.top <= basketRect.bottom
-                ) {
-                    score++;
-                    scoreElement.innerText = score;
-                    nameElement.remove();
-                    return;
-                }
-
-                // حذف الاسم إذا خرج من الشاشة
-                if (posY > container.offsetHeight) {
-                    nameElement.remove();
-                } else {
-                    requestAnimationFrame(fall);
-                }
+            if (positions[playerNum] >= finishPos) {
+                announceWinner(playerNum);
             }
-
-            requestAnimationFrame(fall);
         }
 
-        // إنشاء اسم جديد كل ثانية ونصف
-        setInterval(createFallingName, 1500);
+        // دعم لوحة المفاتيح للمنافسة السريعة
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            if (key === 'a') move(1);
+            if (key === 's') move(2);
+            if (key === 'd') move(3);
+        });
 
+        function announceWinner(num) {
+            gameFinished = true;
+            const names = { 1: 'يماني', 2: 'صالح', 3: 'عبدالله' };
+            const overlay = document.getElementById('winner-overlay');
+            const winText = document.getElementById('winner-text');
+            
+            winText.innerText = "🏆 الفائز هو البطل: " + names[num];
+            overlay.style.display = 'flex';
+        }
+
+        function resetGame() {
+            gameFinished = false;
+            document.getElementById('winner-overlay').style.display = 'none';
+            for (let i = 1; i <= 3; i++) {
+                positions[i] = 20;
+                document.getElementById('p' + i).style.left = '20px';
+            }
+        }
     </script>
 </body>
 </html>
