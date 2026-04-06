@@ -3,197 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحدي الأبطال الثلاثة</title>
+    <title>تحدي عباقرة العائلة</title>
     <style>
         :root {
-            --yamani-color: #ff4757;
-            --saleh-color: #2ed573;
-            --abdullah-color: #1e90ff;
+            --primary-bg: #6c5ce7;
+            --success-color: #00b894;
+            --error-color: #d63031;
         }
 
         body {
-            margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #2f3542;
+            background: var(--primary-bg);
             color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
         }
 
-        h1 { margin: 10px; font-size: 24px; text-shadow: 2px 2px 5px #000; }
-
-        #race-track {
-            width: 90%;
-            max-width: 800px;
-            flex-grow: 1;
-            background: #57606f;
-            border: 4px solid #fff;
+        .setup-screen, .game-screen {
+            background: white;
+            color: #2d3436;
+            padding: 30px;
             border-radius: 20px;
-            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .game-screen { display: none; }
+
+        h1 { color: #6c5ce7; }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .level-btn { background: #fab1a0; color: #d63031; }
+        .level-btn:hover { background: #e17055; color: white; }
+
+        .player-btn { background: #81ecec; color: #008080; }
+        .player-btn:hover { background: #00cec9; color: white; }
+
+        #question-box {
+            font-size: 28px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f1f2f6;
+            border-radius: 10px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: #dfe6e9;
+            color: #2d3436;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 20px;
+            border: 2px solid transparent;
+        }
+
+        .option-btn:hover { background: #b2bec3; }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .score-board {
             display: flex;
-            flex-direction: column;
             justify-content: space-around;
-            padding: 20px 0;
+            width: 100%;
             margin-bottom: 20px;
         }
 
-        .lane {
-            height: 80px;
-            border-bottom: 2px dashed rgba(255,255,255,0.2);
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .finish-line {
-            position: absolute;
-            right: 50px;
-            top: 0;
-            bottom: 0;
-            width: 10px;
-            background: repeating-linear-gradient(45deg, #fff, #fff 10px, #000 10px, #000 20px);
-        }
-
-        .player {
-            position: absolute;
-            left: 20px;
+        .player-score {
+            background: rgba(255,255,255,0.2);
             padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 18px;
-            transition: left 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        #p1 { background: var(--yamani-color); }
-        #p2 { background: var(--saleh-color); }
-        #p3 { background: var(--abdullah-color); }
-
-        .controls {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .btn {
-            padding: 15px 25px;
-            border: none;
             border-radius: 10px;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            active: transform: scale(0.9);
-        }
-
-        #btn1 { background: var(--yamani-color); }
-        #btn2 { background: var(--saleh-color); }
-        #btn3 { background: var(--abdullah-color); }
-
-        #reset-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 5px 15px;
-            background: #ffa502;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        /* رسالة الفوز */
-        #winner-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.8);
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
         }
     </style>
 </head>
 <body>
 
-    <button id="reset-btn" onclick="resetGame()">إعادة السباق 🔄</button>
-    <h1>🚀 تحدي سباق الأبطال الثلاثة</h1>
+    <div class="score-board">
+        <div class="player-score">يماني: <span id="score-1">0</span></div>
+        <div class="player-score">صالح: <span id="score-2">0</span></div>
+        <div class="player-score">عبدالله: <span id="score-3">0</span></div>
+    </div>
 
-    <div id="race-track">
-        <div class="finish-line"></div>
-        
-        <div class="lane">
-            <div id="p1" class="player">يماني</div>
-        </div>
-        <div class="lane">
-            <div id="p2" class="player">صالح</div>
-        </div>
-        <div class="lane">
-            <div id="p3" class="player">عبدالله</div>
+    <div id="setup-screen" class="setup-screen">
+        <h1>مرحباً بكم يا أبطال! 👋</h1>
+        <p>من سيلعب الآن؟</p>
+        <button class="btn player-btn" onclick="setPlayer('يماني')">يماني</button>
+        <button class="btn player-btn" onclick="setPlayer('صالح')">صالح</button>
+        <button class="btn player-btn" onclick="setPlayer('عبدالله')">عبدالله</button>
+        <hr>
+        <p>اختر مستوى الصف الدراسي:</p>
+        <div id="levels">
+            <button class="btn level-btn" onclick="setLevel(1)">الصف 1</button>
+            <button class="btn level-btn" onclick="setLevel(2)">الصف 2</button>
+            <button class="btn level-btn" onclick="setLevel(3)">الصف 3</button>
+            <button class="btn level-btn" onclick="setLevel(4)">الصف 4</button>
+            <button class="btn level-btn" onclick="setLevel(5)">الصف 5</button>
         </div>
     </div>
 
-    <div class="controls">
-        <button id="btn1" class="btn" onmousedown="move(1)">يماني (A)</button>
-        <button id="btn2" class="btn" onmousedown="move(2)">صالح (S)</button>
-        <button id="btn3" class="btn" onmousedown="move(3)">عبدالله (D)</button>
-    </div>
-
-    <p>يمكن اللعب بالضغط على الأزرار الملونة، أو لوحة المفاتيح (A, S, D)</p>
-
-    <div id="winner-overlay">
-        <h2 id="winner-text" style="font-size: 40px;"></h2>
-        <button class="btn" style="background: #2ed573;" onclick="resetGame()">لعب مرة أخرى 🏁</button>
+    <div id="game-screen" class="game-screen">
+        <h2 id="current-turn-text">دور البطل: </h2>
+        <div id="question-box">السؤال سيظهر هنا</div>
+        <div class="options-container" id="options">
+            </div>
+        <div id="feedback"></div>
     </div>
 
     <script>
-        const positions = { 1: 20, 2: 20, 3: 20 };
-        const step = 30; // المسافة التي يقطعها البطل في كل ضغطة
-        let gameFinished = false;
+        const questions = {
+            1: [
+                { q: "ما هو ناتج 5 + 3؟", a: "8", options: ["7", "8", "9", "10"] },
+                { q: "أي حيوان يزأر؟", a: "الأسد", options: ["القط", "الكلب", "الأسد", "الفيل"] },
+                { q: "ما هو لون السماء؟", a: "أزرق", options: ["أحمر", "أخضر", "أزرق", "أصفر"] }
+            ],
+            2: [
+                { q: "ما هو ناتج 15 - 7؟", a: "8", options: ["6", "7", "8", "9"] },
+                { q: "كلمة 'ذهبَ' هي:", a: "فعل", options: ["اسم", "فعل", "حرف", "صفة"] },
+                { q: "كم عدد أركان الإسلام؟", a: "5", options: ["3", "4", "5", "6"] }
+            ],
+            3: [
+                { q: "ما هو ناتج 4 × 3؟", a: "12", options: ["10", "11", "12", "14"] },
+                { q: "عاصمة المملكة العربية السعودية هي:", a: "الرياض", options: ["جدة", "مكة", "الرياض", "الدمام"] },
+                { q: "المادة التي لها شكل ثابت هي المادة:", a: "الصلبة", options: ["السائلة", "الغازية", "الصلبة", "المتطايرة"] }
+            ],
+            4: [
+                { q: "ما هو ناتج 100 ÷ 4؟", a: "25", options: ["20", "25", "30", "50"] },
+                { q: "جمع كلمة 'كتاب' هو:", a: "كتب", options: ["كاتبون", "كتاتيب", "كتب", "مكتبات"] },
+                { q: "أكبر القارات مساحة هي:", a: "آسيا", options: ["أفريقيا", "آسيا", "أوروبا", "أمريكا"] }
+            ],
+            5: [
+                { q: "ما هو ناتج $12 \times 12$؟", a: "144", options: ["124", "134", "144", "154"] },
+                { q: "ما هو العضو المسؤول عن ضخ الدم؟", a: "القلب", options: ["الرئة", "المعدة", "القلب", "الكبد"] },
+                { q: "من هو مكتشف أمريكا؟", a: "كولومبوس", options: ["ماجلان", "فاسكو دي جاما", "كولومبوس", "ابن بطوطة"] }
+            ]
+        };
 
-        function move(playerNum) {
-            if (gameFinished) return;
+        let currentPlayer = "";
+        let currentLevel = 1;
+        let scores = { "يماني": 0, "صالح": 0, "عبدالله": 0 };
 
-            const trackWidth = document.getElementById('race-track').offsetWidth;
-            const finishPos = trackWidth - 150; // خط النهاية
+        function setPlayer(name) {
+            currentPlayer = name;
+            checkReady();
+        }
 
-            positions[playerNum] += step;
-            const playerElement = document.getElementById('p' + playerNum);
-            playerElement.style.left = positions[playerNum] + 'px';
+        function setLevel(lvl) {
+            currentLevel = lvl;
+            checkReady();
+        }
 
-            if (positions[playerNum] >= finishPos) {
-                announceWinner(playerNum);
+        function checkReady() {
+            if (currentPlayer !== "") {
+                document.getElementById('setup-screen').style.display = 'none';
+                document.getElementById('game-screen').style.display = 'block';
+                startLevel();
             }
         }
 
-        // دعم لوحة المفاتيح للمنافسة السريعة
-        document.addEventListener('keydown', (e) => {
-            const key = e.key.toLowerCase();
-            if (key === 'a') move(1);
-            if (key === 's') move(2);
-            if (key === 'd') move(3);
-        });
-
-        function announceWinner(num) {
-            gameFinished = true;
-            const names = { 1: 'يماني', 2: 'صالح', 3: 'عبدالله' };
-            const overlay = document.getElementById('winner-overlay');
-            const winText = document.getElementById('winner-text');
+        function startLevel() {
+            document.getElementById('current-turn-text').innerText = "دور البطل: " + currentPlayer;
+            const levelQuestions = questions[currentLevel];
+            const randomQ = levelQuestions[Math.floor(Math.random() * levelQuestions.length)];
             
-            winText.innerText = "🏆 الفائز هو البطل: " + names[num];
-            overlay.style.display = 'flex';
+            document.getElementById('question-box').innerText = randomQ.q;
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = "";
+
+            randomQ.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt, randomQ.a);
+                optionsDiv.appendChild(btn);
+            });
         }
 
-        function resetGame() {
-            gameFinished = false;
-            document.getElementById('winner-overlay').style.display = 'none';
-            for (let i = 1; i <= 3; i++) {
-                positions[i] = 20;
-                document.getElementById('p' + i).style.left = '20px';
+        function checkAnswer(selected, correct) {
+            const feedback = document.getElementById('feedback');
+            if (selected === correct) {
+                feedback.innerText = "✅ إجابة رائعة يا " + currentPlayer + "!";
+                feedback.style.color = "green";
+                scores[currentPlayer]++;
+                updateScoreBoard();
+                setTimeout(nextPlayer, 2000);
+            } else {
+                feedback.innerText = "❌ حاول مرة أخرى يا بطل، الإجابة هي: " + correct;
+                feedback.style.color = "red";
+                setTimeout(nextPlayer, 3000);
             }
+        }
+
+        function updateScoreBoard() {
+            document.getElementById('score-1').innerText = scores["يماني"];
+            document.getElementById('score-2').innerText = scores["صالح"];
+            document.getElementById('score-3').innerText = scores["عبدالله"];
+        }
+
+        function nextPlayer() {
+            document.getElementById('feedback').innerText = "";
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('setup-screen').style.display = 'block';
+            currentPlayer = ""; // ننتظر اختيار اللاعب التالي
         }
     </script>
 </body>
