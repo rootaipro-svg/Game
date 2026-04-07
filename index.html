@@ -3,231 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحدي عباقرة العائلة</title>
+    <title>اختبار البطل عبدالله - لغة إنجليزية</title>
     <style>
-        :root {
-            --primary-bg: #6c5ce7;
-            --success-color: #00b894;
-            --error-color: #d63031;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--primary-bg);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            text-align: center;
             margin: 0;
             padding: 20px;
         }
-
-        .setup-screen, .game-screen {
+        h1 {
+            color: #ff4500;
+            text-shadow: 2px 2px 4px #ffd700;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
             background: white;
-            color: #2d3436;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            width: 90%;
-            max-width: 600px;
-            text-align: center;
-        }
-
-        .game-screen { display: none; }
-
-        h1 { color: #6c5ce7; }
-
-        .btn {
-            padding: 15px 30px;
-            font-size: 18px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            margin: 10px;
-            transition: 0.3s;
-            font-weight: bold;
-        }
-
-        .level-btn { background: #fab1a0; color: #d63031; }
-        .level-btn:hover { background: #e17055; color: white; }
-
-        .player-btn { background: #81ecec; color: #008080; }
-        .player-btn:hover { background: #00cec9; color: white; }
-
-        #question-box {
-            font-size: 28px;
-            margin: 20px 0;
             padding: 20px;
-            background: #f1f2f6;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #87cefa;
             border-radius: 10px;
+            background-color: #f9fbff;
         }
-
-        .options-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        h2 {
+            color: #1e90ff;
+            border-bottom: 2px dashed #1e90ff;
+            padding-bottom: 10px;
         }
-
-        .option-btn {
-            background: #dfe6e9;
-            color: #2d3436;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 20px;
-            border: 2px solid transparent;
-        }
-
-        .option-btn:hover { background: #b2bec3; }
-
-        #feedback {
-            margin-top: 20px;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        .score-board {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .player-score {
-            background: rgba(255,255,255,0.2);
+        .btn {
+            background-color: #32cd32;
+            color: white;
+            border: none;
             padding: 10px 20px;
-            border-radius: 10px;
+            margin: 5px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
         }
+        .btn:hover { background-color: #228b22; }
+        .btn-word { background-color: #ffa500; font-size: 20px; }
+        .btn-word:hover { background-color: #ff8c00; }
+        
+        .input-box {
+            font-size: 24px;
+            width: 60px;
+            text-align: center;
+            margin: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+        .quiz-item {
+            font-size: 24px;
+            margin: 15px 0;
+            display: inline-block;
+            width: 45%;
+        }
+        .feedback {
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        .correct { color: green; }
+        .incorrect { color: red; }
     </style>
 </head>
 <body>
 
-    <div class="score-board">
-        <div class="player-score">يماني: <span id="score-1">0</span></div>
-        <div class="player-score">صالح: <span id="score-2">0</span></div>
-        <div class="player-score">عبدالله: <span id="score-3">0</span></div>
-    </div>
+    <div class="container">
+        <h1>🌟 اختبار البطل عبدالله 🌟</h1>
+        <p>مرحباً بك يا بطل! لنراجع معاً حروف (S, T, R)</p>
 
-    <div id="setup-screen" class="setup-screen">
-        <h1>مرحباً بكم يا أبطال! 👋</h1>
-        <p>من سيلعب الآن؟</p>
-        <button class="btn player-btn" onclick="setPlayer('يماني')">يماني</button>
-        <button class="btn player-btn" onclick="setPlayer('صالح')">صالح</button>
-        <button class="btn player-btn" onclick="setPlayer('عبدالله')">عبدالله</button>
-        <hr>
-        <p>اختر مستوى الصف الدراسي:</p>
-        <div id="levels">
-            <button class="btn level-btn" onclick="setLevel(1)">الصف 1</button>
-            <button class="btn level-btn" onclick="setLevel(2)">الصف 2</button>
-            <button class="btn level-btn" onclick="setLevel(3)">الصف 3</button>
-            <button class="btn level-btn" onclick="setLevel(4)">الصف 4</button>
-            <button class="btn level-btn" onclick="setLevel(5)">الصف 5</button>
+        <div class="section">
+            <h2>1. استمع وتعلّم 🎧</h2>
+            <p>اضغط على الكلمة لتسمع نطقها الصحيح:</p>
+            
+            <h3>حرف S</h3>
+            <button class="btn btn-word" onclick="speak('Sun')">☀️ Sun</button>
+            <button class="btn btn-word" onclick="speak('Seven')">7️⃣ Seven</button>
+            <button class="btn btn-word" onclick="speak('Star')">⭐ Star</button>
+            <button class="btn btn-word" onclick="speak('Sweets')">🍬 Sweets</button>
+
+            <h3>حرف T</h3>
+            <button class="btn btn-word" onclick="speak('Tiger')">🐅 Tiger</button>
+            <button class="btn btn-word" onclick="speak('Ten')">🔟 Ten</button>
+            <button class="btn btn-word" onclick="speak('Telephone')">☎️ Telephone</button>
+            <button class="btn btn-word" onclick="speak('Tomato')">🍅 Tomato</button>
+
+            <h3>حرف R</h3>
+            <button class="btn btn-word" onclick="speak('Rabbit')">🐇 Rabbit</button>
+            <button class="btn btn-word" onclick="speak('Ring')">💍 Ring</button>
+            <button class="btn btn-word" onclick="speak('Rose')">🌹 Rose</button>
+            <button class="btn btn-word" onclick="speak('Ruler')">📏 Ruler</button>
         </div>
-    </div>
 
-    <div id="game-screen" class="game-screen">
-        <h2 id="current-turn-text">دور البطل: </h2>
-        <div id="question-box">السؤال سيظهر هنا</div>
-        <div class="options-container" id="options">
+        <div class="section">
+            <h2>2. اكتب الحروف يا بطل ✍️</h2>
+            <p>اكتب الحرف الكبير (Capital) والحرف الصغير (Small):</p>
+            
+            <div>
+                <label>اكتب حرف (S) الكبير:</label>
+                <input type="text" id="cap-s" class="input-box" maxlength="1">
+                <label>الصغير:</label>
+                <input type="text" id="sml-s" class="input-box" maxlength="1">
             </div>
-        <div id="feedback"></div>
+            <div>
+                <label>اكتب حرف (T) الكبير:</label>
+                <input type="text" id="cap-t" class="input-box" maxlength="1">
+                <label>الصغير:</label>
+                <input type="text" id="sml-t" class="input-box" maxlength="1">
+            </div>
+            <div>
+                <label>اكتب حرف (R) الكبير:</label>
+                <input type="text" id="cap-r" class="input-box" maxlength="1">
+                <label>الصغير:</label>
+                <input type="text" id="sml-r" class="input-box" maxlength="1">
+            </div>
+            <button class="btn" onclick="checkWriting()">تحقق من الكتابة ✔️</button>
+            <div id="writing-feedback" class="feedback"></div>
+        </div>
+
+        <div class="section">
+            <h2>3. أكمل الحرف الناقص 🧩</h2>
+            <p>اكتب الحرف الأول لكل كلمة (s, t, r):</p>
+            
+            <div class="quiz-item">
+                ☀️ <input type="text" id="q1" class="input-box" maxlength="1"> un
+            </div>
+            <div class="quiz-item">
+                🐅 <input type="text" id="q2" class="input-box" maxlength="1"> iger
+            </div>
+            <div class="quiz-item">
+                🌹 <input type="text" id="q3" class="input-box" maxlength="1"> ose
+            </div>
+            <div class="quiz-item">
+                ☎️ <input type="text" id="q4" class="input-box" maxlength="1"> elephone
+            </div>
+            
+            <br>
+            <button class="btn" onclick="checkQuiz()">تحقق من الإجابات ✔️</button>
+            <div id="quiz-feedback" class="feedback"></div>
+        </div>
+
     </div>
 
     <script>
-        const questions = {
-            1: [
-                { q: "ما هو ناتج 5 + 3؟", a: "8", options: ["7", "8", "9", "10"] },
-                { q: "أي حيوان يزأر؟", a: "الأسد", options: ["القط", "الكلب", "الأسد", "الفيل"] },
-                { q: "ما هو لون السماء؟", a: "أزرق", options: ["أحمر", "أخضر", "أزرق", "أصفر"] }
-            ],
-            2: [
-                { q: "ما هو ناتج 15 - 7؟", a: "8", options: ["6", "7", "8", "9"] },
-                { q: "كلمة 'ذهبَ' هي:", a: "فعل", options: ["اسم", "فعل", "حرف", "صفة"] },
-                { q: "كم عدد أركان الإسلام؟", a: "5", options: ["3", "4", "5", "6"] }
-            ],
-            3: [
-                { q: "ما هو ناتج 4 × 3؟", a: "12", options: ["10", "11", "12", "14"] },
-                { q: "عاصمة المملكة العربية السعودية هي:", a: "الرياض", options: ["جدة", "مكة", "الرياض", "الدمام"] },
-                { q: "المادة التي لها شكل ثابت هي المادة:", a: "الصلبة", options: ["السائلة", "الغازية", "الصلبة", "المتطايرة"] }
-            ],
-            4: [
-                { q: "ما هو ناتج 100 ÷ 4؟", a: "25", options: ["20", "25", "30", "50"] },
-                { q: "جمع كلمة 'كتاب' هو:", a: "كتب", options: ["كاتبون", "كتاتيب", "كتب", "مكتبات"] },
-                { q: "أكبر القارات مساحة هي:", a: "آسيا", options: ["أفريقيا", "آسيا", "أوروبا", "أمريكا"] }
-            ],
-            5: [
-                { q: "ما هو ناتج $12 \times 12$؟", a: "144", options: ["124", "134", "144", "154"] },
-                { q: "ما هو العضو المسؤول عن ضخ الدم؟", a: "القلب", options: ["الرئة", "المعدة", "القلب", "الكبد"] },
-                { q: "من هو مكتشف أمريكا؟", a: "كولومبوس", options: ["ماجلان", "فاسكو دي جاما", "كولومبوس", "ابن بطوطة"] }
-            ]
-        };
-
-        let currentPlayer = "";
-        let currentLevel = 1;
-        let scores = { "يماني": 0, "صالح": 0, "عبدالله": 0 };
-
-        function setPlayer(name) {
-            currentPlayer = name;
-            checkReady();
-        }
-
-        function setLevel(lvl) {
-            currentLevel = lvl;
-            checkReady();
-        }
-
-        function checkReady() {
-            if (currentPlayer !== "") {
-                document.getElementById('setup-screen').style.display = 'none';
-                document.getElementById('game-screen').style.display = 'block';
-                startLevel();
-            }
-        }
-
-        function startLevel() {
-            document.getElementById('current-turn-text').innerText = "دور البطل: " + currentPlayer;
-            const levelQuestions = questions[currentLevel];
-            const randomQ = levelQuestions[Math.floor(Math.random() * levelQuestions.length)];
-            
-            document.getElementById('question-box').innerText = randomQ.q;
-            const optionsDiv = document.getElementById('options');
-            optionsDiv.innerHTML = "";
-
-            randomQ.options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = "option-btn";
-                btn.innerText = opt;
-                btn.onclick = () => checkAnswer(opt, randomQ.a);
-                optionsDiv.appendChild(btn);
-            });
-        }
-
-        function checkAnswer(selected, correct) {
-            const feedback = document.getElementById('feedback');
-            if (selected === correct) {
-                feedback.innerText = "✅ إجابة رائعة يا " + currentPlayer + "!";
-                feedback.style.color = "green";
-                scores[currentPlayer]++;
-                updateScoreBoard();
-                setTimeout(nextPlayer, 2000);
+        // دالة نطق الكلمات باللغة الإنجليزية
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                let msg = new SpeechSynthesisUtterance();
+                msg.text = text;
+                msg.lang = 'en-US'; // تحديد اللغة الإنجليزية
+                msg.rate = 0.9; // تبطيء الصوت قليلاً ليكون واضحاً للطفل
+                window.speechSynthesis.speak(msg);
             } else {
-                feedback.innerText = "❌ حاول مرة أخرى يا بطل، الإجابة هي: " + correct;
-                feedback.style.color = "red";
-                setTimeout(nextPlayer, 3000);
+                alert("عذراً، متصفحك لا يدعم خاصية الصوت.");
             }
         }
 
-        function updateScoreBoard() {
-            document.getElementById('score-1').innerText = scores["يماني"];
-            document.getElementById('score-2').innerText = scores["صالح"];
-            document.getElementById('score-3').innerText = scores["عبدالله"];
+        // دالة التحقق من كتابة الحروف
+        function checkWriting() {
+            let capS = document.getElementById('cap-s').value;
+            let smlS = document.getElementById('sml-s').value;
+            let capT = document.getElementById('cap-t').value;
+            let smlT = document.getElementById('sml-t').value;
+            let capR = document.getElementById('cap-r').value;
+            let smlR = document.getElementById('sml-r').value;
+
+            let isCorrect = true;
+
+            if (capS !== 'S' || smlS !== 's') isCorrect = false;
+            if (capT !== 'T' || smlT !== 't') isCorrect = false;
+            if (capR !== 'R' || smlR !== 'r') isCorrect = false;
+
+            let feedbackObj = document.getElementById('writing-feedback');
+            if (isCorrect) {
+                feedbackObj.innerHTML = "ممتاز يا بطل! كتابتك للحروف صحيحة 100% 🌟";
+                feedbackObj.className = "feedback correct";
+            } else {
+                feedbackObj.innerHTML = "حاول مرة أخرى! تذكر: الحروف الكبيرة (S, T, R) والصغيرة (s, t, r).";
+                feedbackObj.className = "feedback incorrect";
+            }
         }
 
-        function nextPlayer() {
-            document.getElementById('feedback').innerText = "";
-            document.getElementById('game-screen').style.display = 'none';
-            document.getElementById('setup-screen').style.display = 'block';
-            currentPlayer = ""; // ننتظر اختيار اللاعب التالي
+        // دالة التحقق من الكلمات الناقصة
+        function checkQuiz() {
+            let q1 = document.getElementById('q1').value.toLowerCase();
+            let q2 = document.getElementById('q2').value.toLowerCase();
+            let q3 = document.getElementById('q3').value.toLowerCase();
+            let q4 = document.getElementById('q4').value.toLowerCase();
+
+            let score = 0;
+            if (q1 === 's') score++;
+            if (q2 === 't') score++;
+            if (q3 === 'r') score++;
+            if (q4 === 't') score++;
+
+            let feedbackObj = document.getElementById('quiz-feedback');
+            if (score === 4) {
+                feedbackObj.innerHTML = "أنت عبقري يا عبدالله! لقد أجبت على كل الأسئلة بشكل صحيح! 🎉🏆";
+                feedbackObj.className = "feedback correct";
+            } else {
+                feedbackObj.innerHTML = `لقد حصلت على ${score} من 4. حاول التركيز وتصحيح الأخطاء لكي تفوز! 💪`;
+                feedbackObj.className = "feedback incorrect";
+            }
         }
     </script>
 </body>
