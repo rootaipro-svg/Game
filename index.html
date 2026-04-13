@@ -3,218 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار البطل عبدالله - لغة إنجليزية</title>
+    <title>اختبار العلوم الممتع - الصف الخامس</title>
     <style>
+        :root {
+            --primary: #0984e3;
+            --secondary: #00b894;
+            --danger: #d63031;
+            --background: #dfe6e9;
+            --text: #2d3436;
+        }
+
         body {
-            font-family: 'Comic Sans MS', 'Arial', sans-serif;
-            background-color: #f0f8ff;
-            color: #333;
-            text-align: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin: 0;
             padding: 20px;
         }
-        h1 {
-            color: #ff4500;
-            text-shadow: 2px 2px 4px #ffd700;
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 32px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .quiz-container {
             background: white;
-            padding: 20px;
+            width: 100%;
+            max-width: 600px;
             border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            text-align: center;
         }
-        .section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 2px solid #87cefa;
+
+        .question-text {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            color: var(--text);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background-color: #f1f2f6;
+            border: 2px solid #ced6e0;
+            padding: 15px;
+            font-size: 18px;
             border-radius: 10px;
-            background-color: #f9fbff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
         }
-        h2 {
-            color: #1e90ff;
-            border-bottom: 2px dashed #1e90ff;
-            padding-bottom: 10px;
+
+        .option-btn:hover {
+            background-color: #eccc68;
+            border-color: #ffa502;
         }
-        .btn {
-            background-color: #32cd32;
+
+        .option-btn.correct {
+            background-color: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        .option-btn.wrong {
+            background-color: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        .controls {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .next-btn {
+            background-color: var(--primary);
             color: white;
             border: none;
-            padding: 10px 20px;
-            margin: 5px;
+            padding: 12px 30px;
             font-size: 18px;
             border-radius: 8px;
             cursor: pointer;
-            transition: 0.3s;
-        }
-        .btn:hover { background-color: #228b22; }
-        .btn-word { background-color: #ffa500; font-size: 20px; }
-        .btn-word:hover { background-color: #ff8c00; }
-        
-        .input-box {
-            font-size: 24px;
-            width: 60px;
-            text-align: center;
-            margin: 10px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-        }
-        .quiz-item {
-            font-size: 24px;
-            margin: 15px 0;
-            display: inline-block;
-            width: 45%;
-        }
-        .feedback {
             font-weight: bold;
-            font-size: 18px;
-            margin-top: 10px;
         }
-        .correct { color: green; }
-        .incorrect { color: red; }
+
+        .next-btn:hover {
+            background-color: #74b9ff;
+        }
+
+        .score-container {
+            display: none;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .progress {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #636e72;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>🌟 اختبار البطل عبدالله 🌟</h1>
-        <p>مرحباً بك يا بطل! لنراجع معاً حروف (S, T, R)</p>
+    <div class="header">
+        <h1>🔬 اختبار العلوم الممتع 🌍</h1>
+        <p>مراجعة وحدتي (الطقس) و (الروافع) - المنهج اليمني</p>
+    </div>
 
-        <div class="section">
-            <h2>1. استمع وتعلّم 🎧</h2>
-            <p>اضغط على الكلمة لتسمع نطقها الصحيح:</p>
-            
-            <h3>حرف S</h3>
-            <button class="btn btn-word" onclick="speak('Sun')">☀️ Sun</button>
-            <button class="btn btn-word" onclick="speak('Seven')">7️⃣ Seven</button>
-            <button class="btn btn-word" onclick="speak('Star')">⭐ Star</button>
-            <button class="btn btn-word" onclick="speak('Sweets')">🍬 Sweets</button>
+    <div class="quiz-container" id="quiz-box">
+        <div class="progress" id="progress">السؤال 1 من 6</div>
+        <div class="question-text" id="question">جاري تحميل السؤال...</div>
+        
+        <div class="options-grid" id="options">
+            </div>
 
-            <h3>حرف T</h3>
-            <button class="btn btn-word" onclick="speak('Tiger')">🐅 Tiger</button>
-            <button class="btn btn-word" onclick="speak('Ten')">🔟 Ten</button>
-            <button class="btn btn-word" onclick="speak('Telephone')">☎️ Telephone</button>
-            <button class="btn btn-word" onclick="speak('Tomato')">🍅 Tomato</button>
-
-            <h3>حرف R</h3>
-            <button class="btn btn-word" onclick="speak('Rabbit')">🐇 Rabbit</button>
-            <button class="btn btn-word" onclick="speak('Ring')">💍 Ring</button>
-            <button class="btn btn-word" onclick="speak('Rose')">🌹 Rose</button>
-            <button class="btn btn-word" onclick="speak('Ruler')">📏 Ruler</button>
+        <div class="controls" id="controls">
+            <button class="next-btn" onclick="nextQuestion()">السؤال التالي ➡️</button>
         </div>
+    </div>
 
-        <div class="section">
-            <h2>2. اكتب الحروف يا بطل ✍️</h2>
-            <p>اكتب الحرف الكبير (Capital) والحرف الصغير (Small):</p>
-            
-            <div>
-                <label>اكتب حرف (S) الكبير:</label>
-                <input type="text" id="cap-s" class="input-box" maxlength="1">
-                <label>الصغير:</label>
-                <input type="text" id="sml-s" class="input-box" maxlength="1">
-            </div>
-            <div>
-                <label>اكتب حرف (T) الكبير:</label>
-                <input type="text" id="cap-t" class="input-box" maxlength="1">
-                <label>الصغير:</label>
-                <input type="text" id="sml-t" class="input-box" maxlength="1">
-            </div>
-            <div>
-                <label>اكتب حرف (R) الكبير:</label>
-                <input type="text" id="cap-r" class="input-box" maxlength="1">
-                <label>الصغير:</label>
-                <input type="text" id="sml-r" class="input-box" maxlength="1">
-            </div>
-            <button class="btn" onclick="checkWriting()">تحقق من الكتابة ✔️</button>
-            <div id="writing-feedback" class="feedback"></div>
-        </div>
-
-        <div class="section">
-            <h2>3. أكمل الحرف الناقص 🧩</h2>
-            <p>اكتب الحرف الأول لكل كلمة (s, t, r):</p>
-            
-            <div class="quiz-item">
-                ☀️ <input type="text" id="q1" class="input-box" maxlength="1"> un
-            </div>
-            <div class="quiz-item">
-                🐅 <input type="text" id="q2" class="input-box" maxlength="1"> iger
-            </div>
-            <div class="quiz-item">
-                🌹 <input type="text" id="q3" class="input-box" maxlength="1"> ose
-            </div>
-            <div class="quiz-item">
-                ☎️ <input type="text" id="q4" class="input-box" maxlength="1"> elephone
-            </div>
-            
-            <br>
-            <button class="btn" onclick="checkQuiz()">تحقق من الإجابات ✔️</button>
-            <div id="quiz-feedback" class="feedback"></div>
-        </div>
-
+    <div class="quiz-container score-container" id="score-box">
+        <h2>🎉 انتهى الاختبار!</h2>
+        <p>نتيجتك هي:</p>
+        <h1 id="final-score" style="font-size: 48px; color: #00b894;">0 / 6</h1>
+        <button class="next-btn" onclick="location.reload()" style="margin-top: 20px;">إعادة الاختبار 🔄</button>
     </div>
 
     <script>
-        // دالة نطق الكلمات باللغة الإنجليزية
-        function speak(text) {
-            if ('speechSynthesis' in window) {
-                let msg = new SpeechSynthesisUtterance();
-                msg.text = text;
-                msg.lang = 'en-US'; // تحديد اللغة الإنجليزية
-                msg.rate = 0.9; // تبطيء الصوت قليلاً ليكون واضحاً للطفل
-                window.speechSynthesis.speak(msg);
+        // الأسئلة مستخرجة بدقة من صور دليل المعلم المرفقة
+        const quizData = [
+            {
+                question: "ما هو الجهاز المستخدم لقياس درجة حرارة الجو؟ 🌡️",
+                options: ["البارومتر", "الترمومتر", "الأنيمومتر", "دوارة الرياح"],
+                correct: "الترمومتر"
+            },
+            {
+                question: "أي من الأجهزة التالية يستخدم لقياس سرعة الرياح؟ 💨",
+                options: ["الأنيمومتر", "الهيتوجراف", "دوارة الرياح", "الترمومتر المئوي"],
+                correct: "الأنيمومتر"
+            },
+            {
+                question: "يعتبر (الشاكوش) من الأمثلة على الروافع من النوع... 🔨",
+                options: ["النوع الأول", "النوع الثاني", "النوع الثالث", "ليس رافعة"],
+                correct: "النوع الأول"
+            },
+            {
+                question: "بناءً على ما تعلمته، القلم والفأس من الروافع التابعة للنوع... ✏️",
+                options: ["النوع الأول", "النوع الثاني", "النوع الثالث", "جميع ما سبق"],
+                correct: "النوع الثالث"
+            },
+            {
+                question: "جناح الطائر يمثل رافعة من أي نوع؟ 🦅",
+                options: ["النوع الأول", "النوع الثاني", "النوع الثالث", "النوع الرابع"],
+                correct: "النوع الثالث"
+            },
+            {
+                question: "ما هو الجهاز المخصص لقياس الضغط الجوي؟ 🌍",
+                options: ["الترمومتر", "البارومتر", "دوارة الرياح", "مقياس المطر"],
+                correct: "البارومتر"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const progressEl = document.getElementById('progress');
+        const controlsEl = document.getElementById('controls');
+        const quizBox = document.getElementById('quiz-box');
+        const scoreBox = document.getElementById('score-box');
+        const finalScoreEl = document.getElementById('final-score');
+
+        function loadQuestion() {
+            answered = false;
+            controlsEl.style.display = "none";
+            
+            const currentQuiz = quizData[currentQuestionIndex];
+            questionEl.innerText = currentQuiz.question;
+            progressEl.innerText = `السؤال ${currentQuestionIndex + 1} من ${quizData.length}`;
+            
+            optionsEl.innerHTML = "";
+            
+            currentQuiz.options.forEach(option => {
+                const button = document.createElement('button');
+                button.innerText = option;
+                button.classList.add('option-btn');
+                button.onclick = () => checkAnswer(button, option, currentQuiz.correct);
+                optionsEl.appendChild(button);
+            });
+        }
+
+        function checkAnswer(button, selected, correct) {
+            if (answered) return; // منع الإجابة أكثر من مرة
+            answered = true;
+
+            const allButtons = optionsEl.querySelectorAll('.option-btn');
+            
+            if (selected === correct) {
+                button.classList.add('correct');
+                score++;
             } else {
-                alert("عذراً، متصفحك لا يدعم خاصية الصوت.");
+                button.classList.add('wrong');
+                // تظليل الإجابة الصحيحة باللون الأخضر
+                allButtons.forEach(btn => {
+                    if (btn.innerText === correct) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+
+            controlsEl.style.display = "block"; // إظهار زر "السؤال التالي"
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showScore();
             }
         }
 
-        // دالة التحقق من كتابة الحروف
-        function checkWriting() {
-            let capS = document.getElementById('cap-s').value;
-            let smlS = document.getElementById('sml-s').value;
-            let capT = document.getElementById('cap-t').value;
-            let smlT = document.getElementById('sml-t').value;
-            let capR = document.getElementById('cap-r').value;
-            let smlR = document.getElementById('sml-r').value;
-
-            let isCorrect = true;
-
-            if (capS !== 'S' || smlS !== 's') isCorrect = false;
-            if (capT !== 'T' || smlT !== 't') isCorrect = false;
-            if (capR !== 'R' || smlR !== 'r') isCorrect = false;
-
-            let feedbackObj = document.getElementById('writing-feedback');
-            if (isCorrect) {
-                feedbackObj.innerHTML = "ممتاز يا بطل! كتابتك للحروف صحيحة 100% 🌟";
-                feedbackObj.className = "feedback correct";
+        function showScore() {
+            quizBox.style.display = "none";
+            scoreBox.style.display = "block";
+            finalScoreEl.innerText = `${score} / ${quizData.length}`;
+            
+            if (score === quizData.length) {
+                finalScoreEl.innerText += " \nأنت عالم المستقبل! 🌟";
+            } else if (score >= quizData.length / 2) {
+                finalScoreEl.innerText += " \nعمل جيد، واصل التدريب! 👍";
             } else {
-                feedbackObj.innerHTML = "حاول مرة أخرى! تذكر: الحروف الكبيرة (S, T, R) والصغيرة (s, t, r).";
-                feedbackObj.className = "feedback incorrect";
+                finalScoreEl.innerText += " \nتحتاج إلى مراجعة الدروس أكثر يا بطل! 📚";
             }
         }
 
-        // دالة التحقق من الكلمات الناقصة
-        function checkQuiz() {
-            let q1 = document.getElementById('q1').value.toLowerCase();
-            let q2 = document.getElementById('q2').value.toLowerCase();
-            let q3 = document.getElementById('q3').value.toLowerCase();
-            let q4 = document.getElementById('q4').value.toLowerCase();
-
-            let score = 0;
-            if (q1 === 's') score++;
-            if (q2 === 't') score++;
-            if (q3 === 'r') score++;
-            if (q4 === 't') score++;
-
-            let feedbackObj = document.getElementById('quiz-feedback');
-            if (score === 4) {
-                feedbackObj.innerHTML = "أنت عبقري يا عبدالله! لقد أجبت على كل الأسئلة بشكل صحيح! 🎉🏆";
-                feedbackObj.className = "feedback correct";
-            } else {
-                feedbackObj.innerHTML = `لقد حصلت على ${score} من 4. حاول التركيز وتصحيح الأخطاء لكي تفوز! 💪`;
-                feedbackObj.className = "feedback incorrect";
-            }
-        }
+        // بدء الاختبار
+        loadQuestion();
     </script>
 </body>
 </html>
