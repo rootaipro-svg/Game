@@ -3,257 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار العلوم الممتع - الصف الخامس</title>
+    <title>تحدي عباقرة العلوم</title>
     <style>
         :root {
-            --primary: #0984e3;
-            --secondary: #00b894;
-            --danger: #d63031;
-            --background: #dfe6e9;
-            --text: #2d3436;
+            --bg-color: #1e272e;
+            --box-bg: #2d3436;
+            --text-color: #f5f6fa;
+            --accent: #ffdd59;
+            --correct: #05c46b;
+            --wrong: #ff3f34;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background);
-            color: var(--text);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            min-height: 100vh;
             margin: 0;
             padding: 20px;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .header h1 {
-            color: var(--primary);
-            font-size: 32px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            color: var(--accent);
+            font-size: 36px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 221, 89, 0.5);
         }
 
         .quiz-container {
-            background: white;
+            background-color: var(--box-bg);
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
             border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             padding: 30px;
-            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border: 2px solid #575fcf;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #d2dae2;
+            border-bottom: 1px solid #485460;
+            padding-bottom: 10px;
         }
 
         .question-text {
-            font-size: 22px;
+            font-size: 24px;
+            line-height: 1.5;
+            margin-bottom: 30px;
             font-weight: bold;
-            margin-bottom: 25px;
-            color: var(--text);
         }
 
         .options-grid {
-            display: grid;
-            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column;
             gap: 15px;
         }
 
         .option-btn {
-            background-color: #f1f2f6;
-            border: 2px solid #ced6e0;
-            padding: 15px;
+            background-color: #3c40c6;
+            color: white;
+            border: 2px solid transparent;
+            padding: 15px 20px;
             font-size: 18px;
             border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            text-align: right;
+            transition: 0.3s;
             font-family: inherit;
+            display: flex;
+            align-items: center;
         }
 
         .option-btn:hover {
-            background-color: #eccc68;
-            border-color: #ffa502;
+            background-color: #575fcf;
+            transform: translateX(-5px);
         }
 
         .option-btn.correct {
-            background-color: var(--secondary);
-            color: white;
-            border-color: var(--secondary);
+            background-color: var(--correct);
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(5, 196, 107, 0.5);
         }
 
         .option-btn.wrong {
-            background-color: var(--danger);
-            color: white;
-            border-color: var(--danger);
+            background-color: var(--wrong);
+            border-color: #fff;
+            opacity: 0.7;
         }
 
-        .controls {
-            margin-top: 30px;
+        .explanation {
             display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 221, 89, 0.1);
+            border-right: 4px solid var(--accent);
+            border-radius: 5px;
+            font-size: 16px;
+            line-height: 1.6;
         }
 
         .next-btn {
-            background-color: var(--primary);
-            color: white;
+            display: none;
+            margin-top: 25px;
+            background-color: var(--accent);
+            color: #1e272e;
             border: none;
             padding: 12px 30px;
             font-size: 18px;
+            font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
+            width: 100%;
         }
 
         .next-btn:hover {
-            background-color: #74b9ff;
+            background-color: #ffd32a;
         }
 
-        .score-container {
+        #result-screen {
             display: none;
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--primary);
+            text-align: center;
         }
 
-        .progress {
-            margin-bottom: 15px;
-            font-size: 16px;
-            color: #636e72;
+        .medal {
+            font-size: 80px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>🔬 اختبار العلوم الممتع 🌍</h1>
-        <p>مراجعة وحدتي (الطقس) و (الروافع) - المنهج اليمني</p>
+        <h1>🧠 تحدي العباقرة 🧠</h1>
+        <p>أسئلة استنتاجية في العلوم (الطقس والروافع)</p>
     </div>
 
     <div class="quiz-container" id="quiz-box">
-        <div class="progress" id="progress">السؤال 1 من 6</div>
-        <div class="question-text" id="question">جاري تحميل السؤال...</div>
+        <div class="question-header">
+            <span id="q-level">المستوى: متوسط</span>
+            <span id="q-counter">السؤال 1 من 5</span>
+        </div>
         
-        <div class="options-grid" id="options">
+        <div class="question-text" id="question-text">جاري التحميل...</div>
+        
+        <div class="options-grid" id="options-container">
             </div>
 
-        <div class="controls" id="controls">
-            <button class="next-btn" onclick="nextQuestion()">السؤال التالي ➡️</button>
-        </div>
+        <div class="explanation" id="explanation-box"></div>
+
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">السؤال التالي</button>
     </div>
 
-    <div class="quiz-container score-container" id="score-box">
-        <h2>🎉 انتهى الاختبار!</h2>
-        <p>نتيجتك هي:</p>
-        <h1 id="final-score" style="font-size: 48px; color: #00b894;">0 / 6</h1>
-        <button class="next-btn" onclick="location.reload()" style="margin-top: 20px;">إعادة الاختبار 🔄</button>
+    <div class="quiz-container" id="result-screen">
+        <div class="medal" id="medal-icon">🏆</div>
+        <h2 style="color: var(--accent); font-size: 32px;">انتهى التحدي!</h2>
+        <p style="font-size: 24px;">لقد أجبت بشكل صحيح على:</p>
+        <h1 id="final-score" style="font-size: 48px; margin: 10px 0;">0 / 5</h1>
+        <p id="result-message" style="font-size: 20px; margin-bottom: 30px;"></p>
+        <button class="next-btn" style="display: block;" onclick="location.reload()">تحدي جديد 🔄</button>
     </div>
 
     <script>
-        // الأسئلة مستخرجة بدقة من صور دليل المعلم المرفقة
-        const quizData = [
+        const questions = [
             {
-                question: "ما هو الجهاز المستخدم لقياس درجة حرارة الجو؟ 🌡️",
-                options: ["البارومتر", "الترمومتر", "الأنيمومتر", "دوارة الرياح"],
-                correct: "الترمومتر"
+                level: "متوسط 🟡",
+                text: "في محطة الأرصاد، لماذا نستخدم الأنيمومتر ودوارة الرياح معاً ولا نكتفي بجهاز واحد؟",
+                options: [
+                    "لأن أحدهما يقيس سرعة الرياح والآخر يحدد اتجاهها.",
+                    "احتياطاً في حال تعطل أحد الجهازين أثناء العاصفة.",
+                    "لأن الأنيمومتر يقيس الحرارة ودوارة الرياح تقيس السرعة.",
+                    "لأنهما يقيسان نفس الشيء ولكن أحدهما أكثر دقة."
+                ],
+                correctIndex: 0,
+                explanation: "💡 تفسير: الرياح لها صفتان مهمتان (السرعة والاتجاه). الأنيمومتر بأكوابه الدوارة يحسب السرعة، ودوارة الرياح بسهمها تحدد الاتجاه الذي تأتي منه الرياح."
             },
             {
-                question: "أي من الأجهزة التالية يستخدم لقياس سرعة الرياح؟ 💨",
-                options: ["الأنيمومتر", "الهيتوجراف", "دوارة الرياح", "الترمومتر المئوي"],
-                correct: "الأنيمومتر"
+                level: "متوسط 🟡",
+                text: "الشاكوش والقلم كلاهما من الروافع، لكنهما يختلفان علمياً. ما هو الاختلاف؟",
+                options: [
+                    "الشاكوش رافعة من النوع الثاني والقلم من النوع الأول.",
+                    "الشاكوش رافعة من النوع الأول والقلم من النوع الثالث.",
+                    "كلاهما من النوع الثالث ولكن يختلفان في الحجم.",
+                    "القلم ليس رافعة لأنه لا يرفع أثقالاً."
+                ],
+                correctIndex: 1,
+                explanation: "💡 تفسير: في الشاكوش (عند نزع المسمار) تكون نقطة الارتكاز في المنتصف (نوع أول). أما عند الكتابة بالقلم، فإننا نمسكه من المنتصف بقوة أصابعنا (القوة في المنتصف = نوع ثالث)."
             },
             {
-                question: "يعتبر (الشاكوش) من الأمثلة على الروافع من النوع... 🔨",
-                options: ["النوع الأول", "النوع الثاني", "النوع الثالث", "ليس رافعة"],
-                correct: "النوع الأول"
+                level: "صعب 🔴",
+                text: "نعلم أن (الروافع توفر الجهد). ولكن جناح الطائر (رافعة من النوع الثالث) لا يوفر الجهد! فما الفائدة منه للطائر؟",
+                options: [
+                    "يقلل من وزن الطائر في الهواء.",
+                    "يحمي الطائر من الحيوانات المفترسة.",
+                    "يعمل على زيادة المسافة والسرعة ليتمكن من الطيران.",
+                    "يساعد الطائر على حفظ توازنه فقط ولا علاقة له بالطيران."
+                ],
+                correctIndex: 2,
+                explanation: "💡 تفسير: روافع النوع الثالث (حيث القوة في المنتصف) لا توفر الجهد أبداً، بل تحتاج لجهد كبير، ولكن فائدتها العظيمة هي (زيادة المسافة والسرعة) مما يمنح الطائر الدفع اللازم للطيران."
             },
             {
-                question: "بناءً على ما تعلمته، القلم والفأس من الروافع التابعة للنوع... ✏️",
-                options: ["النوع الأول", "النوع الثاني", "النوع الثالث", "جميع ما سبق"],
-                correct: "النوع الثالث"
+                level: "صعب 🔴",
+                text: "كيف يمكن لجهاز (البارومتر) أن ينذرنا باقتراب عاصفة شديدة؟",
+                options: [
+                    "عندما ترتفع درجة حرارته فجأة.",
+                    "عندما يبدأ بالدوران بسرعة كبيرة.",
+                    "عندما يمتلئ بالماء من الأمطار.",
+                    "عندما تنخفض قراءة الضغط الجوي فيه بشكل مفاجئ."
+                ],
+                correctIndex: 3,
+                explanation: "💡 تفسير: البارومتر يقيس الضغط الجوي. عندما ينخفض الضغط الجوي فجأة، فهذا يعني أن الهواء يرتفع لأعلى بسرعة تاركاً فراغاً ستندفع إليه الرياح بقوة، مما يعني قدوم عاصفة."
             },
             {
-                question: "جناح الطائر يمثل رافعة من أي نوع؟ 🦅",
-                options: ["النوع الأول", "النوع الثاني", "النوع الثالث", "النوع الرابع"],
-                correct: "النوع الثالث"
-            },
-            {
-                question: "ما هو الجهاز المخصص لقياس الضغط الجوي؟ 🌍",
-                options: ["الترمومتر", "البارومتر", "دوارة الرياح", "مقياس المطر"],
-                correct: "البارومتر"
+                level: "تحدي العباقرة 💥",
+                text: "فأس الحطاب أداة لقطع الخشب. أين تقع (القوة) التي يبذلها الحطاب عند استخدامه للفأس؟ وما نوع هذه الرافعة؟",
+                options: [
+                    "القوة في الرأس الحديدي (نوع ثاني).",
+                    "القوة في اليد التي تمسك أسفل المقبض (نوع أول).",
+                    "القوة في اليد التي تتحرك في منتصف المقبض الخشبي (نوع ثالث).",
+                    "الفأس يعتمد على وزنه فقط ولا يعتبر رافعة."
+                ],
+                correctIndex: 2,
+                explanation: "💡 تفسير: يد الحطاب السفلية هي نقطة الارتكاز، واليد العليا التي تدفع الفأس في المنتصف هي (القوة)، والرأس الحديدي الذي يضرب الخشب هو (المقاومة). بما أن القوة في المنتصف فهو نوع ثالث!"
             }
         ];
 
-        let currentQuestionIndex = 0;
+        let currentQ = 0;
         let score = 0;
-        let answered = false;
-
-        const questionEl = document.getElementById('question');
-        const optionsEl = document.getElementById('options');
-        const progressEl = document.getElementById('progress');
-        const controlsEl = document.getElementById('controls');
-        const quizBox = document.getElementById('quiz-box');
-        const scoreBox = document.getElementById('score-box');
-        const finalScoreEl = document.getElementById('final-score');
+        let isAnswered = false;
 
         function loadQuestion() {
-            answered = false;
-            controlsEl.style.display = "none";
+            isAnswered = false;
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('explanation-box').style.display = 'none';
             
-            const currentQuiz = quizData[currentQuestionIndex];
-            questionEl.innerText = currentQuiz.question;
-            progressEl.innerText = `السؤال ${currentQuestionIndex + 1} من ${quizData.length}`;
-            
-            optionsEl.innerHTML = "";
-            
-            currentQuiz.options.forEach(option => {
-                const button = document.createElement('button');
-                button.innerText = option;
-                button.classList.add('option-btn');
-                button.onclick = () => checkAnswer(button, option, currentQuiz.correct);
-                optionsEl.appendChild(button);
+            const q = questions[currentQ];
+            document.getElementById('q-level').innerText = "المستوى: " + q.level;
+            document.getElementById('q-counter').innerText = `السؤال ${currentQ + 1} من ${questions.length}`;
+            document.getElementById('question-text').innerText = q.text;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
             });
         }
 
-        function checkAnswer(button, selected, correct) {
-            if (answered) return; // منع الإجابة أكثر من مرة
-            answered = true;
+        function checkAnswer(selectedIndex, btnElement) {
+            if (isAnswered) return;
+            isAnswered = true;
 
-            const allButtons = optionsEl.querySelectorAll('.option-btn');
-            
-            if (selected === correct) {
-                button.classList.add('correct');
+            const q = questions[currentQ];
+            const allButtons = document.querySelectorAll('.option-btn');
+
+            if (selectedIndex === q.correctIndex) {
+                btnElement.classList.add('correct');
                 score++;
             } else {
-                button.classList.add('wrong');
-                // تظليل الإجابة الصحيحة باللون الأخضر
-                allButtons.forEach(btn => {
-                    if (btn.innerText === correct) {
-                        btn.classList.add('correct');
-                    }
-                });
+                btnElement.classList.add('wrong');
+                allButtons[q.correctIndex].classList.add('correct');
             }
 
-            controlsEl.style.display = "block"; // إظهار زر "السؤال التالي"
+            // إظهار التفسير العلمي بعد الإجابة
+            const expBox = document.getElementById('explanation-box');
+            expBox.innerText = q.explanation;
+            expBox.style.display = 'block';
+
+            document.getElementById('next-btn').style.display = 'block';
         }
 
         function nextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < quizData.length) {
+            currentQ++;
+            if (currentQ < questions.length) {
                 loadQuestion();
             } else {
-                showScore();
+                showResults();
             }
         }
 
-        function showScore() {
-            quizBox.style.display = "none";
-            scoreBox.style.display = "block";
-            finalScoreEl.innerText = `${score} / ${quizData.length}`;
+        function showResults() {
+            document.getElementById('quiz-box').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
             
-            if (score === quizData.length) {
-                finalScoreEl.innerText += " \nأنت عالم المستقبل! 🌟";
-            } else if (score >= quizData.length / 2) {
-                finalScoreEl.innerText += " \nعمل جيد، واصل التدريب! 👍";
+            document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+            
+            const msgEl = document.getElementById('result-message');
+            const medalEl = document.getElementById('medal-icon');
+
+            if (score === 5) {
+                medalEl.innerText = "👑";
+                msgEl.innerText = "عبقري لا يُشق له غبار! إجاباتك وتحليلاتك العلمية مذهلة.";
+            } else if (score >= 3) {
+                medalEl.innerText = "🥈";
+                msgEl.innerText = "أداء ممتاز! لديك عقلية علمية قوية، استمر في البحث والتفكير.";
             } else {
-                finalScoreEl.innerText += " \nتحتاج إلى مراجعة الدروس أكثر يا بطل! 📚";
+                medalEl.innerText = "💡";
+                msgEl.innerText = "تحدي صعب أليس كذلك؟ المهم أنك تعلمت معلومات جديدة اليوم!";
             }
         }
 
