@@ -1,327 +1,420 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحدي عباقرة العلوم</title>
-    <style>
-        :root {
-            --bg-color: #1e272e;
-            --box-bg: #2d3436;
-            --text-color: #f5f6fa;
-            --accent: #ffdd59;
-            --correct: #05c46b;
-            --wrong: #ff3f34;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            color: var(--accent);
-            font-size: 36px;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(255, 221, 89, 0.5);
-        }
-
-        .quiz-container {
-            background-color: var(--box-bg);
-            width: 100%;
-            max-width: 700px;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            border: 2px solid #575fcf;
-        }
-
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            font-size: 18px;
-            color: #d2dae2;
-            border-bottom: 1px solid #485460;
-            padding-bottom: 10px;
-        }
-
-        .question-text {
-            font-size: 24px;
-            line-height: 1.5;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
-
-        .options-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .option-btn {
-            background-color: #3c40c6;
-            color: white;
-            border: 2px solid transparent;
-            padding: 15px 20px;
-            font-size: 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            text-align: right;
-            transition: 0.3s;
-            font-family: inherit;
-            display: flex;
-            align-items: center;
-        }
-
-        .option-btn:hover {
-            background-color: #575fcf;
-            transform: translateX(-5px);
-        }
-
-        .option-btn.correct {
-            background-color: var(--correct);
-            border-color: #fff;
-            box-shadow: 0 0 15px rgba(5, 196, 107, 0.5);
-        }
-
-        .option-btn.wrong {
-            background-color: var(--wrong);
-            border-color: #fff;
-            opacity: 0.7;
-        }
-
-        .explanation {
-            display: none;
-            margin-top: 20px;
-            padding: 15px;
-            background-color: rgba(255, 221, 89, 0.1);
-            border-right: 4px solid var(--accent);
-            border-radius: 5px;
-            font-size: 16px;
-            line-height: 1.6;
-        }
-
-        .next-btn {
-            display: none;
-            margin-top: 25px;
-            background-color: var(--accent);
-            color: #1e272e;
-            border: none;
-            padding: 12px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .next-btn:hover {
-            background-color: #ffd32a;
-        }
-
-        #result-screen {
-            display: none;
-            text-align: center;
-        }
-
-        .medal {
-            font-size: 80px;
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>اختبار الكسور - صالح ويماني</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Tahoma, Arial, sans-serif;
+      background: linear-gradient(180deg, #f4fbf7, #eef2f7);
+      color: #102019;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 18px;
+    }
+    .hero {
+      background: white;
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.08);
+      margin-bottom: 16px;
+      border: 1px solid #e5e7eb;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      font-weight: 900;
+    }
+    .hero p {
+      margin: 0;
+      color: #52605a;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .tab {
+      border: 2px solid #d1d5db;
+      background: #fff;
+      padding: 14px;
+      border-radius: 18px;
+      font-size: 19px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .tab.active {
+      background: #087443;
+      border-color: #087443;
+      color: white;
+    }
+    .status {
+      position: sticky;
+      top: 8px;
+      z-index: 10;
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(8px);
+      border: 1px solid #e5e7eb;
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      margin-bottom: 16px;
+    }
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .status-title {
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .status-small {
+      color: #66736c;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+    .btn {
+      border: none;
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .btn-dark { background: #111827; color: white; }
+    .btn-light { background: #e5e7eb; color: #111827; }
+    .result-box {
+      display: none;
+      margin-top: 12px;
+      border-radius: 18px;
+      padding: 12px;
+      font-weight: 900;
+      line-height: 1.7;
+    }
+    .good { background: #dcfce7; color: #166534; }
+    .mid { background: #fef3c7; color: #92400e; }
+    .bad { background: #fee2e2; color: #991b1b; }
+    .question {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 24px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.045);
+    }
+    .q-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .q-num {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      background: #087443;
+      color: white;
+      border-radius: 14px;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+    .q-title {
+      font-weight: 900;
+      font-size: 18px;
+      flex: 1;
+    }
+    .mark {
+      display: none;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 14px;
+      font-weight: 900;
+    }
+    .mark.correct { display: inline-block; background: #dcfce7; color: #166534; }
+    .mark.wrong { display: inline-block; background: #fee2e2; color: #991b1b; }
+    .prompt {
+      background: #f8fafc;
+      border-radius: 18px;
+      padding: 16px;
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 24px;
+      font-weight: 900;
+      text-align: center;
+      line-height: 1.8;
+    }
+    .options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .option {
+      min-height: 58px;
+      border: 2px solid #d1d5db;
+      background: white;
+      border-radius: 18px;
+      font-size: 22px;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px;
+    }
+    .option.selected { border-color: #087443; background: #ecfdf5; }
+    .option.correct-answer { border-color: #16a34a; background: #dcfce7; }
+    .option.wrong-answer { border-color: #ef4444; background: #fee2e2; }
+    .explanation {
+      display: none;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #172554;
+      border-radius: 18px;
+      margin-top: 12px;
+      padding: 12px;
+      font-size: 16px;
+      line-height: 2;
+      font-weight: 700;
+    }
+    .show { display: block; }
+    .fraction {
+      direction: ltr;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      vertical-align: middle;
+      margin: 0 2px;
+    }
+    .whole {
+      font-weight: 900;
+      font-size: 1em;
+    }
+    .frac-core {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      font-weight: 900;
+      min-width: 28px;
+    }
+    .frac-core .top,
+    .frac-core .bottom { padding: 0 4px; }
+    .frac-core .line {
+      width: 100%;
+      height: 2px;
+      background: #111827;
+      border-radius: 99px;
+      margin: 4px 0;
+    }
+    .sign {
+      font-size: 26px;
+      font-weight: 900;
+      margin: 0 5px;
+    }
+    .footer-note {
+      background: #111827;
+      color: white;
+      border-radius: 24px;
+      padding: 20px;
+      text-align: center;
+      line-height: 2;
+      font-weight: 800;
+      margin-top: 20px;
+    }
+    @media (max-width: 640px) {
+      .container { padding: 12px; }
+      .hero h1 { font-size: 25px; }
+      .options { grid-template-columns: 1fr; }
+      .prompt { font-size: 21px; }
+      .option { font-size: 21px; }
+      .status-row { align-items: stretch; }
+      .btn { flex: 1; }
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <section class="hero">
+      <h1>اختبار الكسور التفاعلي</h1>
+      <p>اختبار سريع لصالح ويماني. اختر النموذج، ثم أجب عن الأسئلة. عند الضغط على زر النتيجة سيظهر هل الجواب صحيح أو خطأ مع شرح مختصر.</p>
+      <div class="tabs">
+        <button class="tab active" id="tab-saleh" onclick="loadModel('saleh')">نموذج صالح</button>
+        <button class="tab" id="tab-yamani" onclick="loadModel('yamani')">نموذج يماني</button>
+      </div>
+    </section>
 
-    <div class="header">
-        <h1>🧠 تحدي العباقرة 🧠</h1>
-        <p>أسئلة استنتاجية في العلوم (الطقس والروافع)</p>
-    </div>
-
-    <div class="quiz-container" id="quiz-box">
-        <div class="question-header">
-            <span id="q-level">المستوى: متوسط</span>
-            <span id="q-counter">السؤال 1 من 5</span>
+    <section class="status">
+      <div class="status-row">
+        <div>
+          <div class="status-title" id="model-title">النموذج الأول - صالح</div>
+          <div class="status-small" id="answered-count">تمت الإجابة على 0 من 15 سؤال</div>
         </div>
-        
-        <div class="question-text" id="question-text">جاري التحميل...</div>
-        
-        <div class="options-grid" id="options-container">
-            </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-dark" onclick="showResult()">إظهار النتيجة</button>
+          <button class="btn btn-light" onclick="resetTest()">إعادة الاختبار</button>
+        </div>
+      </div>
+      <div class="result-box" id="result-box"></div>
+    </section>
 
-        <div class="explanation" id="explanation-box"></div>
+    <div id="questions"></div>
 
-        <button class="next-btn" id="next-btn" onclick="nextQuestion()">السؤال التالي</button>
-    </div>
+    <section class="footer-note">
+      قاعدة مهمة: في الجمع والطرح والمقارنة نُوحّد المقامات. في الضرب نضرب مباشرة. في القسمة نقلب الكسر الثاني ثم نضرب.
+    </section>
+  </div>
 
-    <div class="quiz-container" id="result-screen">
-        <div class="medal" id="medal-icon">🏆</div>
-        <h2 style="color: var(--accent); font-size: 32px;">انتهى التحدي!</h2>
-        <p style="font-size: 24px;">لقد أجبت بشكل صحيح على:</p>
-        <h1 id="final-score" style="font-size: 48px; margin: 10px 0;">0 / 5</h1>
-        <p id="result-message" style="font-size: 20px; margin-bottom: 30px;"></p>
-        <button class="next-btn" style="display: block;" onclick="location.reload()">تحدي جديد 🔄</button>
-    </div>
+  <script>
+    function f(n, d, w) {
+      var whole = w ? '<span class="whole">' + w + '</span>' : '';
+      return '<span class="fraction">' + whole + '<span class="frac-core"><span class="top">' + n + '</span><span class="line"></span><span class="bottom">' + d + '</span></span></span>';
+    }
 
-    <script>
-        const questions = [
-            {
-                level: "متوسط 🟡",
-                text: "في محطة الأرصاد، لماذا نستخدم الأنيمومتر ودوارة الرياح معاً ولا نكتفي بجهاز واحد؟",
-                options: [
-                    "لأن أحدهما يقيس سرعة الرياح والآخر يحدد اتجاهها.",
-                    "احتياطاً في حال تعطل أحد الجهازين أثناء العاصفة.",
-                    "لأن الأنيمومتر يقيس الحرارة ودوارة الرياح تقيس السرعة.",
-                    "لأنهما يقيسان نفس الشيء ولكن أحدهما أكثر دقة."
-                ],
-                correctIndex: 0,
-                explanation: "💡 تفسير: الرياح لها صفتان مهمتان (السرعة والاتجاه). الأنيمومتر بأكوابه الدوارة يحسب السرعة، ودوارة الرياح بسهمها تحدد الاتجاه الذي تأتي منه الرياح."
-            },
-            {
-                level: "متوسط 🟡",
-                text: "الشاكوش والقلم كلاهما من الروافع، لكنهما يختلفان علمياً. ما هو الاختلاف؟",
-                options: [
-                    "الشاكوش رافعة من النوع الثاني والقلم من النوع الأول.",
-                    "الشاكوش رافعة من النوع الأول والقلم من النوع الثالث.",
-                    "كلاهما من النوع الثالث ولكن يختلفان في الحجم.",
-                    "القلم ليس رافعة لأنه لا يرفع أثقالاً."
-                ],
-                correctIndex: 1,
-                explanation: "💡 تفسير: في الشاكوش (عند نزع المسمار) تكون نقطة الارتكاز في المنتصف (نوع أول). أما عند الكتابة بالقلم، فإننا نمسكه من المنتصف بقوة أصابعنا (القوة في المنتصف = نوع ثالث)."
-            },
-            {
-                level: "صعب 🔴",
-                text: "نعلم أن (الروافع توفر الجهد). ولكن جناح الطائر (رافعة من النوع الثالث) لا يوفر الجهد! فما الفائدة منه للطائر؟",
-                options: [
-                    "يقلل من وزن الطائر في الهواء.",
-                    "يحمي الطائر من الحيوانات المفترسة.",
-                    "يعمل على زيادة المسافة والسرعة ليتمكن من الطيران.",
-                    "يساعد الطائر على حفظ توازنه فقط ولا علاقة له بالطيران."
-                ],
-                correctIndex: 2,
-                explanation: "💡 تفسير: روافع النوع الثالث (حيث القوة في المنتصف) لا توفر الجهد أبداً، بل تحتاج لجهد كبير، ولكن فائدتها العظيمة هي (زيادة المسافة والسرعة) مما يمنح الطائر الدفع اللازم للطيران."
-            },
-            {
-                level: "صعب 🔴",
-                text: "كيف يمكن لجهاز (البارومتر) أن ينذرنا باقتراب عاصفة شديدة؟",
-                options: [
-                    "عندما ترتفع درجة حرارته فجأة.",
-                    "عندما يبدأ بالدوران بسرعة كبيرة.",
-                    "عندما يمتلئ بالماء من الأمطار.",
-                    "عندما تنخفض قراءة الضغط الجوي فيه بشكل مفاجئ."
-                ],
-                correctIndex: 3,
-                explanation: "💡 تفسير: البارومتر يقيس الضغط الجوي. عندما ينخفض الضغط الجوي فجأة، فهذا يعني أن الهواء يرتفع لأعلى بسرعة تاركاً فراغاً ستندفع إليه الرياح بقوة، مما يعني قدوم عاصفة."
-            },
-            {
-                level: "تحدي العباقرة 💥",
-                text: "فأس الحطاب أداة لقطع الخشب. أين تقع (القوة) التي يبذلها الحطاب عند استخدامه للفأس؟ وما نوع هذه الرافعة؟",
-                options: [
-                    "القوة في الرأس الحديدي (نوع ثاني).",
-                    "القوة في اليد التي تمسك أسفل المقبض (نوع أول).",
-                    "القوة في اليد التي تتحرك في منتصف المقبض الخشبي (نوع ثالث).",
-                    "الفأس يعتمد على وزنه فقط ولا يعتبر رافعة."
-                ],
-                correctIndex: 2,
-                explanation: "💡 تفسير: يد الحطاب السفلية هي نقطة الارتكاز، واليد العليا التي تدفع الفأس في المنتصف هي (القوة)، والرأس الحديدي الذي يضرب الخشب هو (المقاومة). بما أن القوة في المنتصف فهو نوع ثالث!"
-            }
-        ];
+    var models = {
+      saleh: {
+        title: 'النموذج الأول - صالح',
+        questions: [
+          { t:'قارن بين الكسرين', p:f(3,8)+' ___ '+f(5,8), o:['<','>','='], c:'<', e:'المقامات متساوية، نقارن البسط: 3 أصغر من 5.' },
+          { t:'قارن بعد توحيد المقام', p:f(1,2)+' ___ '+f(3,4), o:['>','<','='], c:'<', e:f(1,2)+' = '+f(2,4)+' لذلك '+f(2,4)+' أصغر من '+f(3,4)+'.' },
+          { t:'اختر الكسر الأكبر', p:'أي كسر أكبر؟', o:[f(2,3), f(3,5), f(1,2)], c:f(2,3), e:f(2,3)+' أكبر من '+f(3,5)+' وأكبر من '+f(1,2)+'.' },
+          { t:'اجمع الكسور', p:f(2,7)+' <span class="sign">+</span> '+f(3,7)+' = ؟', o:[f(5,7), f(5,14), f(1,7)], c:f(5,7), e:'المقامات متساوية، نجمع البسط فقط: 2 + 3 = 5.' },
+          { t:'اجمع بعد توحيد المقام', p:f(1,4)+' <span class="sign">+</span> '+f(3,8)+' = ؟', o:[f(4,12), f(5,8), f(1,2)], c:f(5,8), e:f(1,4)+' = '+f(2,8)+' ثم '+f(2,8)+' + '+f(3,8)+' = '+f(5,8)+'.' },
+          { t:'اطرح الكسور', p:f(5,6)+' <span class="sign">-</span> '+f(1,3)+' = ؟', o:[f(4,3), f(1,2), f(4,6)], c:f(1,2), e:f(1,3)+' = '+f(2,6)+'، إذن '+f(5,6)+' - '+f(2,6)+' = '+f(3,6)+' = '+f(1,2)+'.' },
+          { t:'اضرب الكسور', p:f(2,3)+' <span class="sign">×</span> '+f(3,4)+' = ؟', o:[f(6,12), f(5,7), f(6,7)], c:f(6,12), e:'في الضرب نضرب البسط في البسط والمقام في المقام: 2×3=6 و 3×4=12.' },
+          { t:'اقسم الكسور', p:f(1,2)+' <span class="sign">÷</span> '+f(3,4)+' = ؟', o:[f(3,8), f(2,3), f(4,6)], c:f(2,3), e:f(1,2)+' ÷ '+f(3,4)+' = '+f(1,2)+' × '+f(4,3)+' = '+f(4,6)+' = '+f(2,3)+'.' },
+          { t:'حوّل العدد الكسري', p:'حوّل '+f(1,5,2)+' إلى كسر غير حقيقي.', o:[f(11,5), f(7,5), f(10,5)], c:f(11,5), e:'5 × 2 = 10، ثم 10 + 1 = 11، والمقام يبقى 5.' },
+          { t:'حوّل الكسر غير الحقيقي', p:'حوّل '+f(17,5)+' إلى عدد كسري.', o:[f(7,5,2), f(2,5,3), f(1,5,4)], c:f(2,5,3), e:'17 ÷ 5 = 3 والباقي 2، إذن الجواب '+f(2,5,3)+'.' },
+          { t:'كسر مكافئ', p:'أي كسر يكافئ '+f(3,4)+' ؟', o:[f(6,8), f(6,4), f(3,8)], c:f(6,8), e:'نضرب البسط والمقام في نفس العدد: 3×2=6 و 4×2=8.' },
+          { t:'بسّط الكسر', p:'بسّط '+f(6,8), o:[f(3,4), f(2,4), f(1,2)], c:f(3,4), e:'نقسم البسط والمقام على 2: 6÷2=3 و 8÷2=4.' },
+          { t:'مسألة لفظية', p:'أكل صالح '+f(1,4)+' من البيتزا، وأكل أخوه '+f(2,4)+'. كم أكلا معًا؟', o:[f(3,4), f(2,8), f(1,2)], c:f(3,4), e:'المقام متساوٍ، 1 + 2 = 3، إذن أكلا '+f(3,4)+'.' },
+          { t:'ترتيب تصاعدي', p:'رتّب من الأصغر إلى الأكبر: '+f(1,2)+'، '+f(3,4)+'، '+f(1,4), o:[f(1,4)+'، '+f(1,2)+'، '+f(3,4), f(3,4)+'، '+f(1,2)+'، '+f(1,4), f(1,2)+'، '+f(1,4)+'، '+f(3,4)], c:f(1,4)+'، '+f(1,2)+'، '+f(3,4), e:f(1,2)+' = '+f(2,4)+'، إذن الأصغر '+f(1,4)+' ثم '+f(1,2)+' ثم '+f(3,4)+'.' },
+          { t:'عدد كسري مع جمع', p:f(1,3,1)+' <span class="sign">+</span> '+f(1,3,2)+' = ؟', o:[f(2,3,3), f(2,3,2), f(1,3,3)], c:f(2,3,3), e:'1+2=3، و '+f(1,3)+' + '+f(1,3)+' = '+f(2,3)+'.' }
+        ]
+      },
+      yamani: {
+        title: 'النموذج الثاني - يماني',
+        questions: [
+          { t:'قارن بين الكسرين', p:f(4,9)+' ___ '+f(7,9), o:['>','<','='], c:'<', e:'المقام نفسه، 4 أصغر من 7.' },
+          { t:'قارن بعد توحيد المقام', p:f(5,6)+' ___ '+f(2,3), o:['>','<','='], c:'>', e:f(2,3)+' = '+f(4,6)+'، لذلك '+f(5,6)+' أكبر.' },
+          { t:'اختر الكسر الأصغر', p:'أي كسر أصغر؟', o:[f(3,4), f(1,8), f(1,2)], c:f(1,8), e:f(1,8)+' هو الأصغر.' },
+          { t:'اجمع الكسور', p:f(4,10)+' <span class="sign">+</span> '+f(3,10)+' = ؟', o:[f(7,20), f(7,10), f(1,10)], c:f(7,10), e:'المقام متساوٍ، نجمع البسط: 4 + 3 = 7.' },
+          { t:'اجمع بعد توحيد المقام', p:f(1,3)+' <span class="sign">+</span> '+f(1,6)+' = ؟', o:[f(2,9), f(1,2), f(2,6)], c:f(1,2), e:f(1,3)+' = '+f(2,6)+'، ثم '+f(2,6)+' + '+f(1,6)+' = '+f(3,6)+' = '+f(1,2)+'.' },
+          { t:'اطرح الكسور', p:f(7,10)+' <span class="sign">-</span> '+f(2,5)+' = ؟', o:[f(3,10), f(5,5), f(9,10)], c:f(3,10), e:f(2,5)+' = '+f(4,10)+'، إذن '+f(7,10)+' - '+f(4,10)+' = '+f(3,10)+'.' },
+          { t:'اضرب الكسور', p:f(3,5)+' <span class="sign">×</span> '+f(2,7)+' = ؟', o:[f(5,12), f(6,35), f(6,12)], c:f(6,35), e:'3×2=6 و 5×7=35.' },
+          { t:'اقسم الكسور', p:f(2,5)+' <span class="sign">÷</span> 4 = ؟', o:[f(8,5), f(1,10), f(2,20)], c:f(1,10), e:f(2,5)+' ÷ 4 = '+f(2,5)+' × '+f(1,4)+' = '+f(2,20)+' = '+f(1,10)+'.' },
+          { t:'حوّل العدد الكسري', p:'حوّل '+f(2,7,3)+' إلى كسر غير حقيقي.', o:[f(23,7), f(21,7), f(17,7)], c:f(23,7), e:'7 × 3 = 21، ثم 21 + 2 = 23.' },
+          { t:'حوّل الكسر غير الحقيقي', p:'حوّل '+f(14,3)+' إلى عدد كسري.', o:[f(2,3,4), f(5,3,3), f(1,3,5)], c:f(2,3,4), e:'14 ÷ 3 = 4 والباقي 2، إذن الجواب '+f(2,3,4)+'.' },
+          { t:'كسر مكافئ', p:'أي كسر يكافئ '+f(2,5)+' ؟', o:[f(4,10), f(2,10), f(5,2)], c:f(4,10), e:'2×2=4 و 5×2=10.' },
+          { t:'بسّط الكسر', p:'بسّط '+f(9,12), o:[f(3,4), f(1,3), f(6,8)], c:f(3,4), e:'نقسم البسط والمقام على 3: 9÷3=3 و 12÷3=4.' },
+          { t:'مسألة لفظية', p:'قطع يماني '+f(3,8)+' كم من الطريق، ثم قطع '+f(2,8)+' كم. كم قطع؟', o:[f(5,8), f(1,8), f(6,16)], c:f(5,8), e:'المقام متساوٍ، 3 + 2 = 5.' },
+          { t:'ترتيب تنازلي', p:'رتّب من الأكبر إلى الأصغر: '+f(1,3)+'، '+f(2,3)+'، '+f(1,6), o:[f(2,3)+'، '+f(1,3)+'، '+f(1,6), f(1,6)+'، '+f(1,3)+'، '+f(2,3), f(1,3)+'، '+f(2,3)+'، '+f(1,6)], c:f(2,3)+'، '+f(1,3)+'، '+f(1,6), e:f(2,3)+' = '+f(4,6)+'، و '+f(1,3)+' = '+f(2,6)+'، إذن الترتيب الصحيح من الأكبر هو '+f(2,3)+' ثم '+f(1,3)+' ثم '+f(1,6)+'.' },
+          { t:'عدد كسري مع طرح', p:f(3,5,4)+' <span class="sign">-</span> '+f(1,5,2)+' = ؟', o:[f(2,5,2), f(4,5,2), f(2,5,1)], c:f(2,5,2), e:'4-2=2، و '+f(3,5)+' - '+f(1,5)+' = '+f(2,5)+'.' }
+        ]
+      }
+    };
 
-        let currentQ = 0;
-        let score = 0;
-        let isAnswered = false;
+    var currentModel = 'saleh';
+    var answers = {};
+    var resultsShown = false;
 
-        function loadQuestion() {
-            isAnswered = false;
-            document.getElementById('next-btn').style.display = 'none';
-            document.getElementById('explanation-box').style.display = 'none';
-            
-            const q = questions[currentQ];
-            document.getElementById('q-level').innerText = "المستوى: " + q.level;
-            document.getElementById('q-counter').innerText = `السؤال ${currentQ + 1} من ${questions.length}`;
-            document.getElementById('question-text').innerText = q.text;
+    function renderQuestions() {
+      var model = models[currentModel];
+      document.getElementById('model-title').innerText = model.title;
+      document.getElementById('tab-saleh').classList.toggle('active', currentModel === 'saleh');
+      document.getElementById('tab-yamani').classList.toggle('active', currentModel === 'yamani');
 
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
+      var html = '';
+      model.questions.forEach(function(q, i) {
+        var selected = answers[i];
+        var isCorrect = selected === q.c;
+        html += '<section class="question">';
+        html += '<div class="q-head"><div class="q-num">'+(i+1)+'</div><div class="q-title">'+q.t+'</div>';
+        html += '<span class="mark '+(resultsShown ? (isCorrect ? 'correct' : 'wrong') : '')+'">'+(isCorrect ? 'صحيح' : 'خطأ')+'</span></div>';
+        html += '<div class="prompt">'+q.p+'</div>';
+        html += '<div class="options">';
+        q.o.forEach(function(opt, optIndex) {
+          var cls = 'option';
+          if (selected === opt) cls += ' selected';
+          if (resultsShown && opt === q.c) cls += ' correct-answer';
+          if (resultsShown && selected === opt && selected !== q.c) cls += ' wrong-answer';
+          html += '<button class="'+cls+'" onclick="chooseAnswer('+i+', '+optIndex+')">'+opt+'</button>';
+        });
+        html += '</div>';
+        html += '<div class="explanation '+(resultsShown ? 'show' : '')+'"><strong>الشرح:</strong> '+q.e+'</div>';
+        html += '</section>';
+      });
+      document.getElementById('questions').innerHTML = html;
+      updateAnsweredCount();
+      updateResultBox();
+    }
 
-            q.options.forEach((opt, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt;
-                btn.onclick = () => checkAnswer(index, btn);
-                optionsContainer.appendChild(btn);
-            });
-        }
+    function chooseAnswer(index, optIndex) {
+      answers[index] = models[currentModel].questions[index].o[optIndex];
+      renderQuestions();
+    }
 
-        function checkAnswer(selectedIndex, btnElement) {
-            if (isAnswered) return;
-            isAnswered = true;
+    function updateAnsweredCount() {
+      var total = models[currentModel].questions.length;
+      var answered = Object.keys(answers).length;
+      document.getElementById('answered-count').innerText = 'تمت الإجابة على ' + answered + ' من ' + total + ' سؤال';
+    }
 
-            const q = questions[currentQ];
-            const allButtons = document.querySelectorAll('.option-btn');
+    function showResult() {
+      resultsShown = true;
+      renderQuestions();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-            if (selectedIndex === q.correctIndex) {
-                btnElement.classList.add('correct');
-                score++;
-            } else {
-                btnElement.classList.add('wrong');
-                allButtons[q.correctIndex].classList.add('correct');
-            }
+    function updateResultBox() {
+      var box = document.getElementById('result-box');
+      if (!resultsShown) {
+        box.style.display = 'none';
+        return;
+      }
+      var questions = models[currentModel].questions;
+      var score = 0;
+      questions.forEach(function(q, i) {
+        if (answers[i] === q.c) score++;
+      });
+      var percent = Math.round(score / questions.length * 100);
+      box.style.display = 'block';
+      box.className = 'result-box ' + (percent >= 80 ? 'good' : percent >= 60 ? 'mid' : 'bad');
+      var msg = percent >= 80 ? 'ممتاز، الفهم جيد.' : percent >= 60 ? 'جيد، يحتاج مراجعة لبعض الأسئلة.' : 'يحتاج مراجعة قوية قبل الاختبار.';
+      box.innerHTML = 'النتيجة: ' + score + ' / ' + questions.length + ' — ' + percent + '%<br>' + msg;
+    }
 
-            // إظهار التفسير العلمي بعد الإجابة
-            const expBox = document.getElementById('explanation-box');
-            expBox.innerText = q.explanation;
-            expBox.style.display = 'block';
+    function resetTest() {
+      answers = {};
+      resultsShown = false;
+      renderQuestions();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-            document.getElementById('next-btn').style.display = 'block';
-        }
+    function loadModel(modelName) {
+      currentModel = modelName;
+      resetTest();
+    }
 
-        function nextQuestion() {
-            currentQ++;
-            if (currentQ < questions.length) {
-                loadQuestion();
-            } else {
-                showResults();
-            }
-        }
-
-        function showResults() {
-            document.getElementById('quiz-box').style.display = 'none';
-            document.getElementById('result-screen').style.display = 'block';
-            
-            document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
-            
-            const msgEl = document.getElementById('result-message');
-            const medalEl = document.getElementById('medal-icon');
-
-            if (score === 5) {
-                medalEl.innerText = "👑";
-                msgEl.innerText = "عبقري لا يُشق له غبار! إجاباتك وتحليلاتك العلمية مذهلة.";
-            } else if (score >= 3) {
-                medalEl.innerText = "🥈";
-                msgEl.innerText = "أداء ممتاز! لديك عقلية علمية قوية، استمر في البحث والتفكير.";
-            } else {
-                medalEl.innerText = "💡";
-                msgEl.innerText = "تحدي صعب أليس كذلك؟ المهم أنك تعلمت معلومات جديدة اليوم!";
-            }
-        }
-
-        // بدء الاختبار
-        loadQuestion();
-    </script>
+    renderQuestions();
+  </script>
 </body>
 </html>
