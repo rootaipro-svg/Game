@@ -1,420 +1,524 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html><html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>اختبار الكسور - صالح ويماني</title>
+  <title>دوّارة عيد بن يماني</title>
   <style>
-    * { box-sizing: border-box; }
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: Tahoma, Arial, sans-serif;
-      background: linear-gradient(180deg, #f4fbf7, #eef2f7);
-      color: #102019;
-    }
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      padding: 18px;
-    }
-    .hero {
-      background: white;
-      border-radius: 24px;
-      padding: 22px;
-      box-shadow: 0 12px 30px rgba(0,0,0,.08);
-      margin-bottom: 16px;
-      border: 1px solid #e5e7eb;
-    }
-    .hero h1 {
-      margin: 0 0 8px;
-      font-size: 30px;
-      font-weight: 900;
-    }
-    .hero p {
-      margin: 0;
-      color: #52605a;
-      line-height: 1.8;
-      font-size: 16px;
-    }
-    .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 18px;
-    }
-    .tab {
-      border: 2px solid #d1d5db;
-      background: #fff;
-      padding: 14px;
-      border-radius: 18px;
-      font-size: 19px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-    .tab.active {
-      background: #087443;
-      border-color: #087443;
-      color: white;
-    }
-    .status {
-      position: sticky;
-      top: 8px;
-      z-index: 10;
-      background: rgba(255,255,255,.96);
-      backdrop-filter: blur(8px);
-      border: 1px solid #e5e7eb;
-      border-radius: 22px;
-      padding: 14px;
-      box-shadow: 0 10px 24px rgba(0,0,0,.08);
-      margin-bottom: 16px;
-    }
-    .status-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .status-title {
-      font-size: 20px;
-      font-weight: 900;
-    }
-    .status-small {
-      color: #66736c;
-      font-size: 14px;
-      margin-top: 4px;
-    }
-    .btn {
-      border: none;
-      border-radius: 16px;
-      padding: 12px 16px;
-      font-size: 16px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-    .btn-dark { background: #111827; color: white; }
-    .btn-light { background: #e5e7eb; color: #111827; }
-    .result-box {
-      display: none;
-      margin-top: 12px;
-      border-radius: 18px;
-      padding: 12px;
-      font-weight: 900;
-      line-height: 1.7;
-    }
-    .good { background: #dcfce7; color: #166534; }
-    .mid { background: #fef3c7; color: #92400e; }
-    .bad { background: #fee2e2; color: #991b1b; }
-    .question {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 24px;
-      padding: 18px;
-      margin-bottom: 14px;
-      box-shadow: 0 6px 18px rgba(0,0,0,.045);
-    }
-    .q-head {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .q-num {
-      width: 38px;
-      height: 38px;
-      display: grid;
-      place-items: center;
-      background: #087443;
-      color: white;
-      border-radius: 14px;
-      font-weight: 900;
-      flex: 0 0 auto;
-    }
-    .q-title {
-      font-weight: 900;
-      font-size: 18px;
-      flex: 1;
-    }
-    .mark {
-      display: none;
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 14px;
-      font-weight: 900;
-    }
-    .mark.correct { display: inline-block; background: #dcfce7; color: #166534; }
-    .mark.wrong { display: inline-block; background: #fee2e2; color: #991b1b; }
-    .prompt {
-      background: #f8fafc;
-      border-radius: 18px;
-      padding: 16px;
-      min-height: 74px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      flex-wrap: wrap;
-      font-size: 24px;
-      font-weight: 900;
-      text-align: center;
-      line-height: 1.8;
-    }
-    .options {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 12px;
-    }
-    .option {
-      min-height: 58px;
-      border: 2px solid #d1d5db;
-      background: white;
-      border-radius: 18px;
-      font-size: 22px;
-      font-weight: 900;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 10px;
-    }
-    .option.selected { border-color: #087443; background: #ecfdf5; }
-    .option.correct-answer { border-color: #16a34a; background: #dcfce7; }
-    .option.wrong-answer { border-color: #ef4444; background: #fee2e2; }
-    .explanation {
-      display: none;
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      color: #172554;
-      border-radius: 18px;
-      margin-top: 12px;
-      padding: 12px;
-      font-size: 16px;
-      line-height: 2;
-      font-weight: 700;
-    }
-    .show { display: block; }
-    .fraction {
-      direction: ltr;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      vertical-align: middle;
-      margin: 0 2px;
-    }
-    .whole {
-      font-weight: 900;
-      font-size: 1em;
-    }
-    .frac-core {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-      font-weight: 900;
-      min-width: 28px;
-    }
-    .frac-core .top,
-    .frac-core .bottom { padding: 0 4px; }
-    .frac-core .line {
-      width: 100%;
-      height: 2px;
-      background: #111827;
-      border-radius: 99px;
-      margin: 4px 0;
-    }
-    .sign {
-      font-size: 26px;
-      font-weight: 900;
-      margin: 0 5px;
-    }
-    .footer-note {
-      background: #111827;
-      color: white;
-      border-radius: 24px;
-      padding: 20px;
-      text-align: center;
-      line-height: 2;
-      font-weight: 800;
-      margin-top: 20px;
-    }
-    @media (max-width: 640px) {
-      .container { padding: 12px; }
-      .hero h1 { font-size: 25px; }
-      .options { grid-template-columns: 1fr; }
-      .prompt { font-size: 21px; }
-      .option { font-size: 21px; }
-      .status-row { align-items: stretch; }
-      .btn { flex: 1; }
-    }
+      padding: 0;
+      font-family: "Tahoma", "Arial", sans-serif;
+    }body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,0.25), transparent 35%),
+    linear-gradient(135deg, #063b37, #0b5b52 45%, #041f1d);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+.page {
+  width: 100%;
+  max-width: 980px;
+  text-align: center;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.badge {
+  display: inline-block;
+  background: rgba(255, 215, 128, 0.16);
+  border: 1px solid rgba(255, 215, 128, 0.45);
+  color: #ffd986;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-size: clamp(30px, 6vw, 58px);
+  color: #ffe6a3;
+  text-shadow: 0 4px 18px rgba(0,0,0,0.35);
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: #e8fffb;
+  font-size: clamp(15px, 2.5vw, 20px);
+  opacity: 0.92;
+}
+
+.game-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 22px 70px rgba(0,0,0,0.35);
+  border-radius: 34px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 22px;
+  align-items: center;
+  overflow: hidden;
+}
+
+.game-card::before,
+.game-card::after {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(255,218,126,0.23), transparent 68%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.game-card::before {
+  top: -70px;
+  right: -60px;
+}
+
+.game-card::after {
+  bottom: -80px;
+  left: -70px;
+}
+
+.wheel-area {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 520px;
+  z-index: 2;
+}
+
+.pointer {
+  position: absolute;
+  top: 22px;
+  z-index: 5;
+  width: 0;
+  height: 0;
+  border-left: 22px solid transparent;
+  border-right: 22px solid transparent;
+  border-top: 48px solid #ffe6a3;
+  filter: drop-shadow(0 6px 8px rgba(0,0,0,0.35));
+}
+
+.wheel-wrap {
+  position: relative;
+  width: min(86vw, 470px);
+  height: min(86vw, 470px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #fff2bd, #b8842a);
+  padding: 12px;
+  box-shadow:
+    0 0 0 7px rgba(255,230,163,0.18),
+    0 22px 44px rgba(0,0,0,0.42);
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 6s cubic-bezier(.12,.74,.12,1);
+}
+
+.center-button {
+  position: absolute;
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+  border: 7px solid rgba(255,255,255,0.72);
+  background: linear-gradient(145deg, #ffd986, #b97d22);
+  color: #063b37;
+  font-size: 24px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 22px rgba(0,0,0,0.36);
+  z-index: 4;
+  transition: 0.2s;
+}
+
+.center-button:hover {
+  transform: scale(1.05);
+}
+
+.center-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.panel {
+  position: relative;
+  z-index: 2;
+  background: rgba(0,0,0,0.18);
+  border-radius: 28px;
+  padding: 22px;
+  text-align: right;
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+.panel h2 {
+  color: #ffe6a3;
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+
+.panel p {
+  line-height: 1.9;
+  color: #f1fffd;
+  font-size: 16px;
+  margin-bottom: 18px;
+}
+
+.result-box {
+  background: rgba(255, 230, 163, 0.12);
+  border: 1px dashed rgba(255,230,163,0.65);
+  border-radius: 24px;
+  padding: 18px;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.result-title {
+  font-size: 15px;
+  color: #d7fff9;
+  margin-bottom: 8px;
+}
+
+.result-prize {
+  font-size: clamp(24px, 4vw, 38px);
+  color: #ffe6a3;
+  font-weight: 900;
+  line-height: 1.4;
+}
+
+.actions {
+  display: grid;
+  gap: 10px;
+}
+
+.secondary-btn {
+  border: 0;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.13);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.16);
+}
+
+.secondary-btn:hover {
+  background: rgba(255,255,255,0.20);
+}
+
+.note {
+  margin-top: 14px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.8;
+}
+
+.confetti {
+  position: fixed;
+  top: -20px;
+  width: 10px;
+  height: 16px;
+  opacity: 0.95;
+  animation: fall 2.8s linear forwards;
+  z-index: 99;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(760deg);
+    opacity: 0;
+  }
+}
+
+.floating {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.moon, .star {
+  position: absolute;
+  color: rgba(255,230,163,0.28);
+  animation: float 6s ease-in-out infinite;
+  font-size: 28px;
+}
+
+.moon { top: 8%; left: 9%; font-size: 58px; }
+.star:nth-child(2) { top: 16%; right: 12%; animation-delay: 1s; }
+.star:nth-child(3) { bottom: 18%; right: 8%; animation-delay: 2s; }
+.star:nth-child(4) { bottom: 10%; left: 12%; animation-delay: 1.7s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
+}
+
+@media (max-width: 820px) {
+  .game-card {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+
+  .wheel-area {
+    min-height: 430px;
+  }
+
+  .center-button {
+    width: 96px;
+    height: 96px;
+    font-size: 20px;
+  }
+
+  .pointer {
+    top: 14px;
+  }
+}
+
   </style>
 </head>
 <body>
-  <div class="container">
-    <section class="hero">
-      <h1>اختبار الكسور التفاعلي</h1>
-      <p>اختبار سريع لصالح ويماني. اختر النموذج، ثم أجب عن الأسئلة. عند الضغط على زر النتيجة سيظهر هل الجواب صحيح أو خطأ مع شرح مختصر.</p>
-      <div class="tabs">
-        <button class="tab active" id="tab-saleh" onclick="loadModel('saleh')">نموذج صالح</button>
-        <button class="tab" id="tab-yamani" onclick="loadModel('yamani')">نموذج يماني</button>
-      </div>
-    </section>
-
-    <section class="status">
-      <div class="status-row">
-        <div>
-          <div class="status-title" id="model-title">النموذج الأول - صالح</div>
-          <div class="status-small" id="answered-count">تمت الإجابة على 0 من 15 سؤال</div>
-        </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn btn-dark" onclick="showResult()">إظهار النتيجة</button>
-          <button class="btn btn-light" onclick="resetTest()">إعادة الاختبار</button>
-        </div>
-      </div>
-      <div class="result-box" id="result-box"></div>
-    </section>
-
-    <div id="questions"></div>
-
-    <section class="footer-note">
-      قاعدة مهمة: في الجمع والطرح والمقارنة نُوحّد المقامات. في الضرب نضرب مباشرة. في القسمة نقلب الكسر الثاني ثم نضرب.
-    </section>
+  <div class="floating">
+    <div class="moon">☾</div>
+    <div class="star">✦</div>
+    <div class="star">✧</div>
+    <div class="star">✦</div>
+  </div>  <main class="page">
+    <section class="header">
+      <div class="badge">عيدكم فرحة وجوائز</div>
+      <h1>دوّارة العيد</h1>
+      <p class="subtitle">لف الدوّارة… وخلي الحظ يختار هديتك!</p>
+    </section><section class="game-card">
+  <div class="wheel-area">
+    <div class="pointer"></div>
+    <div class="wheel-wrap">
+      <canvas id="wheel" width="800" height="800"></canvas>
+      <button class="center-button" id="spinBtn">لفها</button>
+    </div>
   </div>
 
-  <script>
-    function f(n, d, w) {
-      var whole = w ? '<span class="whole">' + w + '</span>' : '';
-      return '<span class="fraction">' + whole + '<span class="frac-core"><span class="top">' + n + '</span><span class="line"></span><span class="bottom">' + d + '</span></span></span>';
+  <aside class="panel">
+    <h2>طريقة اللعب</h2>
+    <p>
+      كل طفل يضغط زر <strong>لفها</strong> مرة واحدة. عندما تتوقف الدوّارة، تظهر الجائزة أو التحدي.
+      يمكنك تعديل الجوائز من داخل الكود حسب رغبتك.
+    </p>
+
+    <div class="result-box">
+      <div class="result-title">النتيجة ستظهر هنا</div>
+      <div class="result-prize" id="result">جاهز؟</div>
+    </div>
+
+    <div class="actions">
+      <button class="secondary-btn" onclick="resetResult()">مسح النتيجة</button>
+    </div>
+
+    <div class="note">
+      ملاحظة: الأفضل تشغيلها على شاشة كبيرة أو جوال أمام الأطفال، وكل فائز يستلم جائزته مباشرة.
+    </div>
+  </aside>
+</section>
+
+  </main>  <script>
+    const canvas = document.getElementById("wheel");
+    const ctx = canvas.getContext("2d");
+    const spinBtn = document.getElementById("spinBtn");
+    const resultEl = document.getElementById("result");
+
+    // عدّل الجوائز من هنا فقط
+    const prizes = [
+      "100 ريال",
+      "200 ريال",
+      "300 ريال",
+      "500 ريال",
+      "700 ريال",
+      "1000 ريال",
+      "1500 ريال",
+      "2000 ريال",
+      "3000 ريال",
+      "كاكاويات",
+      "كروبي",
+      "متحدي: قل نكتة",
+      "سؤال عيد",
+      "تحدي: أنشد بيت شعر",
+      "عقوبة خفيفة: 5 قفزات",
+      "حظ أوفر"
+    ];
+
+    const colors = [
+      "#ffe6a3", "#0f6b61", "#ffffff", "#d7a449",
+      "#c94444", "#1f8a70", "#f9c74f", "#277da1",
+      "#f9844a", "#43aa8b", "#f6f7eb", "#7b2cbf",
+      "#90be6d", "#f94144", "#577590", "#f3722c"
+    ];
+
+    const size = canvas.width;
+    const center = size / 2;
+    const radius = center - 22;
+    const segmentAngle = (2 * Math.PI) / prizes.length;
+    let currentRotation = 0;
+    let spinning = false;
+
+    function drawWheel() {
+      ctx.clearRect(0, 0, size, size);
+
+      prizes.forEach((prize, index) => {
+        const startAngle = index * segmentAngle;
+        const endAngle = startAngle + segmentAngle;
+
+        ctx.beginPath();
+        ctx.moveTo(center, center);
+        ctx.arc(center, center, radius, startAngle, endAngle);
+        ctx.closePath();
+        ctx.fillStyle = colors[index % colors.length];
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(6,59,55,0.22)";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        ctx.save();
+        ctx.translate(center, center);
+        ctx.rotate(startAngle + segmentAngle / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = ["#ffffff", "#f6f7eb"].includes(colors[index % colors.length]) ? "#063b37" : "#063b37";
+        if (["#0f6b61", "#c94444", "#277da1", "#7b2cbf", "#577590", "#f94144"].includes(colors[index % colors.length])) {
+          ctx.fillStyle = "#ffffff";
+        }
+        ctx.font = "bold 28px Tahoma";
+        wrapText(ctx, prize, radius - 28, 8, 135, 32);
+        ctx.restore();
+      });
+
+      // الدائرة الوسطى
+      ctx.beginPath();
+      ctx.arc(center, center, 75, 0, 2 * Math.PI);
+      ctx.fillStyle = "#063b37";
+      ctx.fill();
+      ctx.strokeStyle = "#ffe6a3";
+      ctx.lineWidth = 8;
+      ctx.stroke();
+
+      ctx.fillStyle = "#ffe6a3";
+      ctx.font = "bold 34px Tahoma";
+      ctx.textAlign = "center";
+      ctx.fillText("عيد", center, center + 12);
     }
 
-    var models = {
-      saleh: {
-        title: 'النموذج الأول - صالح',
-        questions: [
-          { t:'قارن بين الكسرين', p:f(3,8)+' ___ '+f(5,8), o:['<','>','='], c:'<', e:'المقامات متساوية، نقارن البسط: 3 أصغر من 5.' },
-          { t:'قارن بعد توحيد المقام', p:f(1,2)+' ___ '+f(3,4), o:['>','<','='], c:'<', e:f(1,2)+' = '+f(2,4)+' لذلك '+f(2,4)+' أصغر من '+f(3,4)+'.' },
-          { t:'اختر الكسر الأكبر', p:'أي كسر أكبر؟', o:[f(2,3), f(3,5), f(1,2)], c:f(2,3), e:f(2,3)+' أكبر من '+f(3,5)+' وأكبر من '+f(1,2)+'.' },
-          { t:'اجمع الكسور', p:f(2,7)+' <span class="sign">+</span> '+f(3,7)+' = ؟', o:[f(5,7), f(5,14), f(1,7)], c:f(5,7), e:'المقامات متساوية، نجمع البسط فقط: 2 + 3 = 5.' },
-          { t:'اجمع بعد توحيد المقام', p:f(1,4)+' <span class="sign">+</span> '+f(3,8)+' = ؟', o:[f(4,12), f(5,8), f(1,2)], c:f(5,8), e:f(1,4)+' = '+f(2,8)+' ثم '+f(2,8)+' + '+f(3,8)+' = '+f(5,8)+'.' },
-          { t:'اطرح الكسور', p:f(5,6)+' <span class="sign">-</span> '+f(1,3)+' = ؟', o:[f(4,3), f(1,2), f(4,6)], c:f(1,2), e:f(1,3)+' = '+f(2,6)+'، إذن '+f(5,6)+' - '+f(2,6)+' = '+f(3,6)+' = '+f(1,2)+'.' },
-          { t:'اضرب الكسور', p:f(2,3)+' <span class="sign">×</span> '+f(3,4)+' = ؟', o:[f(6,12), f(5,7), f(6,7)], c:f(6,12), e:'في الضرب نضرب البسط في البسط والمقام في المقام: 2×3=6 و 3×4=12.' },
-          { t:'اقسم الكسور', p:f(1,2)+' <span class="sign">÷</span> '+f(3,4)+' = ؟', o:[f(3,8), f(2,3), f(4,6)], c:f(2,3), e:f(1,2)+' ÷ '+f(3,4)+' = '+f(1,2)+' × '+f(4,3)+' = '+f(4,6)+' = '+f(2,3)+'.' },
-          { t:'حوّل العدد الكسري', p:'حوّل '+f(1,5,2)+' إلى كسر غير حقيقي.', o:[f(11,5), f(7,5), f(10,5)], c:f(11,5), e:'5 × 2 = 10، ثم 10 + 1 = 11، والمقام يبقى 5.' },
-          { t:'حوّل الكسر غير الحقيقي', p:'حوّل '+f(17,5)+' إلى عدد كسري.', o:[f(7,5,2), f(2,5,3), f(1,5,4)], c:f(2,5,3), e:'17 ÷ 5 = 3 والباقي 2، إذن الجواب '+f(2,5,3)+'.' },
-          { t:'كسر مكافئ', p:'أي كسر يكافئ '+f(3,4)+' ؟', o:[f(6,8), f(6,4), f(3,8)], c:f(6,8), e:'نضرب البسط والمقام في نفس العدد: 3×2=6 و 4×2=8.' },
-          { t:'بسّط الكسر', p:'بسّط '+f(6,8), o:[f(3,4), f(2,4), f(1,2)], c:f(3,4), e:'نقسم البسط والمقام على 2: 6÷2=3 و 8÷2=4.' },
-          { t:'مسألة لفظية', p:'أكل صالح '+f(1,4)+' من البيتزا، وأكل أخوه '+f(2,4)+'. كم أكلا معًا؟', o:[f(3,4), f(2,8), f(1,2)], c:f(3,4), e:'المقام متساوٍ، 1 + 2 = 3، إذن أكلا '+f(3,4)+'.' },
-          { t:'ترتيب تصاعدي', p:'رتّب من الأصغر إلى الأكبر: '+f(1,2)+'، '+f(3,4)+'، '+f(1,4), o:[f(1,4)+'، '+f(1,2)+'، '+f(3,4), f(3,4)+'، '+f(1,2)+'، '+f(1,4), f(1,2)+'، '+f(1,4)+'، '+f(3,4)], c:f(1,4)+'، '+f(1,2)+'، '+f(3,4), e:f(1,2)+' = '+f(2,4)+'، إذن الأصغر '+f(1,4)+' ثم '+f(1,2)+' ثم '+f(3,4)+'.' },
-          { t:'عدد كسري مع جمع', p:f(1,3,1)+' <span class="sign">+</span> '+f(1,3,2)+' = ؟', o:[f(2,3,3), f(2,3,2), f(1,3,3)], c:f(2,3,3), e:'1+2=3، و '+f(1,3)+' + '+f(1,3)+' = '+f(2,3)+'.' }
-        ]
-      },
-      yamani: {
-        title: 'النموذج الثاني - يماني',
-        questions: [
-          { t:'قارن بين الكسرين', p:f(4,9)+' ___ '+f(7,9), o:['>','<','='], c:'<', e:'المقام نفسه، 4 أصغر من 7.' },
-          { t:'قارن بعد توحيد المقام', p:f(5,6)+' ___ '+f(2,3), o:['>','<','='], c:'>', e:f(2,3)+' = '+f(4,6)+'، لذلك '+f(5,6)+' أكبر.' },
-          { t:'اختر الكسر الأصغر', p:'أي كسر أصغر؟', o:[f(3,4), f(1,8), f(1,2)], c:f(1,8), e:f(1,8)+' هو الأصغر.' },
-          { t:'اجمع الكسور', p:f(4,10)+' <span class="sign">+</span> '+f(3,10)+' = ؟', o:[f(7,20), f(7,10), f(1,10)], c:f(7,10), e:'المقام متساوٍ، نجمع البسط: 4 + 3 = 7.' },
-          { t:'اجمع بعد توحيد المقام', p:f(1,3)+' <span class="sign">+</span> '+f(1,6)+' = ؟', o:[f(2,9), f(1,2), f(2,6)], c:f(1,2), e:f(1,3)+' = '+f(2,6)+'، ثم '+f(2,6)+' + '+f(1,6)+' = '+f(3,6)+' = '+f(1,2)+'.' },
-          { t:'اطرح الكسور', p:f(7,10)+' <span class="sign">-</span> '+f(2,5)+' = ؟', o:[f(3,10), f(5,5), f(9,10)], c:f(3,10), e:f(2,5)+' = '+f(4,10)+'، إذن '+f(7,10)+' - '+f(4,10)+' = '+f(3,10)+'.' },
-          { t:'اضرب الكسور', p:f(3,5)+' <span class="sign">×</span> '+f(2,7)+' = ؟', o:[f(5,12), f(6,35), f(6,12)], c:f(6,35), e:'3×2=6 و 5×7=35.' },
-          { t:'اقسم الكسور', p:f(2,5)+' <span class="sign">÷</span> 4 = ؟', o:[f(8,5), f(1,10), f(2,20)], c:f(1,10), e:f(2,5)+' ÷ 4 = '+f(2,5)+' × '+f(1,4)+' = '+f(2,20)+' = '+f(1,10)+'.' },
-          { t:'حوّل العدد الكسري', p:'حوّل '+f(2,7,3)+' إلى كسر غير حقيقي.', o:[f(23,7), f(21,7), f(17,7)], c:f(23,7), e:'7 × 3 = 21، ثم 21 + 2 = 23.' },
-          { t:'حوّل الكسر غير الحقيقي', p:'حوّل '+f(14,3)+' إلى عدد كسري.', o:[f(2,3,4), f(5,3,3), f(1,3,5)], c:f(2,3,4), e:'14 ÷ 3 = 4 والباقي 2، إذن الجواب '+f(2,3,4)+'.' },
-          { t:'كسر مكافئ', p:'أي كسر يكافئ '+f(2,5)+' ؟', o:[f(4,10), f(2,10), f(5,2)], c:f(4,10), e:'2×2=4 و 5×2=10.' },
-          { t:'بسّط الكسر', p:'بسّط '+f(9,12), o:[f(3,4), f(1,3), f(6,8)], c:f(3,4), e:'نقسم البسط والمقام على 3: 9÷3=3 و 12÷3=4.' },
-          { t:'مسألة لفظية', p:'قطع يماني '+f(3,8)+' كم من الطريق، ثم قطع '+f(2,8)+' كم. كم قطع؟', o:[f(5,8), f(1,8), f(6,16)], c:f(5,8), e:'المقام متساوٍ، 3 + 2 = 5.' },
-          { t:'ترتيب تنازلي', p:'رتّب من الأكبر إلى الأصغر: '+f(1,3)+'، '+f(2,3)+'، '+f(1,6), o:[f(2,3)+'، '+f(1,3)+'، '+f(1,6), f(1,6)+'، '+f(1,3)+'، '+f(2,3), f(1,3)+'، '+f(2,3)+'، '+f(1,6)], c:f(2,3)+'، '+f(1,3)+'، '+f(1,6), e:f(2,3)+' = '+f(4,6)+'، و '+f(1,3)+' = '+f(2,6)+'، إذن الترتيب الصحيح من الأكبر هو '+f(2,3)+' ثم '+f(1,3)+' ثم '+f(1,6)+'.' },
-          { t:'عدد كسري مع طرح', p:f(3,5,4)+' <span class="sign">-</span> '+f(1,5,2)+' = ؟', o:[f(2,5,2), f(4,5,2), f(2,5,1)], c:f(2,5,2), e:'4-2=2، و '+f(3,5)+' - '+f(1,5)+' = '+f(2,5)+'.' }
-        ]
+    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(" ");
+      let line = "";
+      const lines = [];
+
+      for (let i = 0; i < words.length; i++) {
+        const testLine = line + words[i] + " ";
+        const metrics = context.measureText(testLine);
+        if (metrics.width > maxWidth && i > 0) {
+          lines.push(line);
+          line = words[i] + " ";
+        } else {
+          line = testLine;
+        }
       }
-    };
+      lines.push(line);
 
-    var currentModel = 'saleh';
-    var answers = {};
-    var resultsShown = false;
+      const startY = y - ((lines.length - 1) * lineHeight) / 2;
+      lines.forEach((l, idx) => context.fillText(l.trim(), x, startY + idx * lineHeight));
+    }
 
-    function renderQuestions() {
-      var model = models[currentModel];
-      document.getElementById('model-title').innerText = model.title;
-      document.getElementById('tab-saleh').classList.toggle('active', currentModel === 'saleh');
-      document.getElementById('tab-yamani').classList.toggle('active', currentModel === 'yamani');
+    function spinWheel() {
+      if (spinning) return;
 
-      var html = '';
-      model.questions.forEach(function(q, i) {
-        var selected = answers[i];
-        var isCorrect = selected === q.c;
-        html += '<section class="question">';
-        html += '<div class="q-head"><div class="q-num">'+(i+1)+'</div><div class="q-title">'+q.t+'</div>';
-        html += '<span class="mark '+(resultsShown ? (isCorrect ? 'correct' : 'wrong') : '')+'">'+(isCorrect ? 'صحيح' : 'خطأ')+'</span></div>';
-        html += '<div class="prompt">'+q.p+'</div>';
-        html += '<div class="options">';
-        q.o.forEach(function(opt, optIndex) {
-          var cls = 'option';
-          if (selected === opt) cls += ' selected';
-          if (resultsShown && opt === q.c) cls += ' correct-answer';
-          if (resultsShown && selected === opt && selected !== q.c) cls += ' wrong-answer';
-          html += '<button class="'+cls+'" onclick="chooseAnswer('+i+', '+optIndex+')">'+opt+'</button>';
+      spinning = true;
+      spinBtn.disabled = true;
+      resultEl.textContent = "تدور الآن...";
+
+      const selectedIndex = Math.floor(Math.random() * prizes.length);
+      const fullSpins = 7 + Math.floor(Math.random() * 4);
+      const pointerAngle = Math.PI * 1.5; // أعلى الدائرة
+      const selectedSegmentCenter = selectedIndex * segmentAngle + segmentAngle / 2;
+      const targetRotation = (fullSpins * 2 * Math.PI) + pointerAngle - selectedSegmentCenter;
+
+      currentRotation += targetRotation;
+      canvas.style.transform = `rotate(${currentRotation}rad)`;
+
+      setTimeout(() => {
+        const prize = prizes[selectedIndex];
+        resultEl.textContent = prize;
+        spinning = false;
+        spinBtn.disabled = false;
+        launchConfetti();
+        playWinSound();
+      }, 6200);
+    }
+
+    function resetResult() {
+      if (!spinning) {
+        resultEl.textContent = "جاهز؟";
+      }
+    }
+
+    function launchConfetti() {
+      const confettiColors = ["#ffe6a3", "#ffffff", "#d7a449", "#43aa8b", "#f94144"];
+      for (let i = 0; i < 80; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti";
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.background = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+        piece.style.animationDelay = Math.random() * 0.6 + "s";
+        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 3500);
+      }
+    }
+
+    function playWinSound() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const notes = [523.25, 659.25, 783.99, 1046.5];
+        notes.forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.frequency.value = freq;
+          osc.type = "sine";
+          gain.gain.setValueAtTime(0.001, audioCtx.currentTime + i * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.18, audioCtx.currentTime + i * 0.12 + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.12 + 0.18);
+          osc.start(audioCtx.currentTime + i * 0.12);
+          osc.stop(audioCtx.currentTime + i * 0.12 + 0.22);
         });
-        html += '</div>';
-        html += '<div class="explanation '+(resultsShown ? 'show' : '')+'"><strong>الشرح:</strong> '+q.e+'</div>';
-        html += '</section>';
-      });
-      document.getElementById('questions').innerHTML = html;
-      updateAnsweredCount();
-      updateResultBox();
+      } catch (e) {}
     }
 
-    function chooseAnswer(index, optIndex) {
-      answers[index] = models[currentModel].questions[index].o[optIndex];
-      renderQuestions();
-    }
-
-    function updateAnsweredCount() {
-      var total = models[currentModel].questions.length;
-      var answered = Object.keys(answers).length;
-      document.getElementById('answered-count').innerText = 'تمت الإجابة على ' + answered + ' من ' + total + ' سؤال';
-    }
-
-    function showResult() {
-      resultsShown = true;
-      renderQuestions();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function updateResultBox() {
-      var box = document.getElementById('result-box');
-      if (!resultsShown) {
-        box.style.display = 'none';
-        return;
-      }
-      var questions = models[currentModel].questions;
-      var score = 0;
-      questions.forEach(function(q, i) {
-        if (answers[i] === q.c) score++;
-      });
-      var percent = Math.round(score / questions.length * 100);
-      box.style.display = 'block';
-      box.className = 'result-box ' + (percent >= 80 ? 'good' : percent >= 60 ? 'mid' : 'bad');
-      var msg = percent >= 80 ? 'ممتاز، الفهم جيد.' : percent >= 60 ? 'جيد، يحتاج مراجعة لبعض الأسئلة.' : 'يحتاج مراجعة قوية قبل الاختبار.';
-      box.innerHTML = 'النتيجة: ' + score + ' / ' + questions.length + ' — ' + percent + '%<br>' + msg;
-    }
-
-    function resetTest() {
-      answers = {};
-      resultsShown = false;
-      renderQuestions();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function loadModel(modelName) {
-      currentModel = modelName;
-      resetTest();
-    }
-
-    renderQuestions();
-  </script>
-</body>
+    spinBtn.addEventListener("click", spinWheel);
+    drawWheel();
+  </script></body>
 </html>
