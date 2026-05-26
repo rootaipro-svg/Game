@@ -351,24 +351,75 @@ canvas {
     const spinBtn = document.getElementById("spinBtn");
     const resultEl = document.getElementById("result");
 
-    // عدّل الجوائز من هنا فقط
+    // عدّل الجوائز والأسئلة من هنا فقط
     const prizes = [
-      "100 ريال",
-      "200 ريال",
-      "300 ريال",
-      "500 ريال",
-      "700 ريال",
-      "1000 ريال",
-      "1500 ريال",
-      "2000 ريال",
-      "3000 ريال",
-      "كاكاويات",
-      "كروبي",
-      "متحدي: قل نكتة",
-      "سؤال عيد",
-      "تحدي: أنشد بيت شعر",
-      "عقوبة خفيفة: 5 قفزات",
-      "حظ أوفر"
+      { label: "100 ريال", type: "money" },
+      { label: "200 ريال", type: "money" },
+      { label: "300 ريال", type: "money" },
+      { label: "500 ريال", type: "money" },
+      { label: "700 ريال", type: "money" },
+      { label: "1000 ريال", type: "money" },
+      { label: "1500 ريال", type: "money" },
+      { label: "كاكاويات", type: "gift" },
+      { label: "كروبي", type: "gift" },
+      { label: "متحدي", type: "challenge" },
+      { label: "سؤال عيد", type: "question" },
+      { label: "تحدي: قل نكتة", type: "challenge" },
+      { label: "تحدي: أنشد بيت شعر", type: "challenge" },
+      { label: "عقوبة خفيفة: 5 قفزات", type: "penalty" },
+      { label: "حظ أوفر", type: "none" },
+      { label: "هدية مفاجأة", type: "gift" }
+    ];
+
+    const eidQuestions = [
+      {
+        question: "كم عدد أيام عيد الأضحى مع أيام التشريق؟",
+        options: "أ) يوم واحد  |  ب) 4 أيام  |  ج) 7 أيام",
+        answer: "ب) 4 أيام",
+        reward: "الجائزة: 300 ريال أو كيس كاكاويات"
+      },
+      {
+        question: "ماذا نقول عند تهنئة الناس بالعيد؟",
+        options: "أ) تقبل الله منا ومنكم  |  ب) تصبح على خير  |  ج) صباح الشتاء",
+        answer: "أ) تقبل الله منا ومنكم",
+        reward: "الجائزة: 200 ريال"
+      },
+      {
+        question: "ما اسم الصلاة التي نصليها صباح العيد؟",
+        options: "أ) صلاة العيد  |  ب) صلاة الكسوف  |  ج) صلاة الاستسقاء",
+        answer: "أ) صلاة العيد",
+        reward: "الجائزة: 300 ريال"
+      },
+      {
+        question: "ما الشيء الجميل الذي يكثر في العيد بين الأهل والأطفال؟",
+        options: "أ) الخصام  |  ب) العيدية والفرحة  |  ج) النوم فقط",
+        answer: "ب) العيدية والفرحة",
+        reward: "الجائزة: كروبي + 100 ريال"
+      },
+      {
+        question: "ما الحيوان المرتبط بشعيرة الأضحية في عيد الأضحى؟",
+        options: "أ) الخروف أو الإبل أو البقر  |  ب) السمك  |  ج) الطيور فقط",
+        answer: "أ) الخروف أو الإبل أو البقر",
+        reward: "الجائزة: 500 ريال"
+      },
+      {
+        question: "أكمل العبارة: عيدكم مبارك و...",
+        options: "أ) كل عام وأنتم بخير  |  ب) لا تلعبوا  |  ج) انتهى العيد",
+        answer: "أ) كل عام وأنتم بخير",
+        reward: "الجائزة: 200 ريال أو كاكاويات"
+      },
+      {
+        question: "ما أفضل شيء تفعله في العيد مع أهلك؟",
+        options: "أ) السلام والزيارة والابتسامة  |  ب) الزعل  |  ج) الجلوس وحدك",
+        answer: "أ) السلام والزيارة والابتسامة",
+        reward: "الجائزة: 300 ريال"
+      },
+      {
+        question: "ما معنى العيدية؟",
+        options: "أ) هدية أو مبلغ يفرح به الأطفال  |  ب) واجب مدرسي  |  ج) اسم لعبة",
+        answer: "أ) هدية أو مبلغ يفرح به الأطفال",
+        reward: "الجائزة: 100 ريال + كروبي"
+      }
     ];
 
     const colors = [
@@ -412,7 +463,7 @@ canvas {
           ctx.fillStyle = "#ffffff";
         }
         ctx.font = "bold 28px Tahoma";
-        wrapText(ctx, prize, radius - 28, 8, 135, 32);
+        wrapText(ctx, prize.label, radius - 28, 8, 135, 32);
         ctx.restore();
       });
 
@@ -487,7 +538,7 @@ canvas {
 
       setTimeout(() => {
         const prize = prizes[selectedIndex];
-        resultEl.textContent = prize;
+        showPrizeResult(prize);
         spinning = false;
         spinBtn.disabled = false;
         launchConfetti();
@@ -497,8 +548,48 @@ canvas {
 
     function resetResult() {
       if (!spinning) {
-        resultEl.textContent = "جاهز؟";
+        resultEl.innerHTML = "جاهز؟";
       }
+    }
+
+    function showPrizeResult(prize) {
+      if (prize.type === "question") {
+        const q = eidQuestions[Math.floor(Math.random() * eidQuestions.length)];
+        resultEl.innerHTML = `
+          <div style="font-size:22px; color:#ffe6a3; margin-bottom:10px;">${prize.label}</div>
+          <div style="font-size:17px; line-height:1.9; color:#ffffff; margin-bottom:8px;">${q.question}</div>
+          <div style="font-size:15px; line-height:1.8; color:#e8fffb; margin-bottom:8px;">${q.options}</div>
+          <div style="font-size:15px; line-height:1.8; color:#ffe6a3; margin-bottom:8px;">الإجابة الصحيحة: ${q.answer}</div>
+          <div style="font-size:16px; line-height:1.8; color:#ffffff; background:rgba(255,230,163,0.14); border-radius:14px; padding:8px 10px;">${q.reward}</div>
+        `;
+        return;
+      }
+
+      if (prize.type === "challenge") {
+        resultEl.innerHTML = `
+          <div style="font-size:30px; color:#ffe6a3; margin-bottom:8px;">${prize.label}</div>
+          <div style="font-size:16px; line-height:1.8; color:#ffffff;">إذا نفّذ التحدي بنجاح: الجائزة 200 ريال أو كاكاويات</div>
+        `;
+        return;
+      }
+
+      if (prize.type === "penalty") {
+        resultEl.innerHTML = `
+          <div style="font-size:28px; color:#ffe6a3; margin-bottom:8px;">${prize.label}</div>
+          <div style="font-size:16px; line-height:1.8; color:#ffffff;">بعد تنفيذ العقوبة الخفيفة: يحصل على كروبي</div>
+        `;
+        return;
+      }
+
+      if (prize.type === "none") {
+        resultEl.innerHTML = `
+          <div style="font-size:30px; color:#ffe6a3; margin-bottom:8px;">حظ أوفر</div>
+          <div style="font-size:16px; line-height:1.8; color:#ffffff;">يعاد له الدور بعد طفلين حتى لا يزعل</div>
+        `;
+        return;
+      }
+
+      resultEl.innerHTML = prize.label;
     }
 
     function launchConfetti() {
