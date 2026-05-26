@@ -459,13 +459,30 @@ canvas {
       spinBtn.disabled = true;
       resultEl.textContent = "تدور الآن...";
 
+      // نختار الجائزة أولاً، ثم نحسب زاوية توقف الدوارة بحيث تقف هذه الجائزة تحت السهم بدقة
       const selectedIndex = Math.floor(Math.random() * prizes.length);
       const fullSpins = 7 + Math.floor(Math.random() * 4);
-      const pointerAngle = Math.PI * 1.5; // أعلى الدائرة
-      const selectedSegmentCenter = selectedIndex * segmentAngle + segmentAngle / 2;
-      const targetRotation = (fullSpins * 2 * Math.PI) + pointerAngle - selectedSegmentCenter;
 
-      currentRotation += targetRotation;
+      // السهم في أعلى الدائرة، وزاويته بالنسبة للرسم هي 270 درجة
+      const pointerAngle = Math.PI * 1.5;
+
+      // مركز القطاع المختار داخل الدوارة
+      const selectedSegmentCenter = selectedIndex * segmentAngle + segmentAngle / 2;
+
+      // الزاوية النهائية المطلوبة للدوارة بحيث يصبح مركز القطاع المختار تحت السهم
+      const desiredFinalRotation = pointerAngle - selectedSegmentCenter;
+
+      // نحسب الفرق من وضع الدوارة الحالي حتى لا تتراكم الأخطاء بعد كل لفة
+      const currentNormalized = ((currentRotation % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
+      const desiredNormalized = ((desiredFinalRotation % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
+      let rotationDelta = desiredNormalized - currentNormalized;
+
+      // نجعل الحركة دائماً للأمام ونضيف لفات كاملة للحماس
+      if (rotationDelta < 0) {
+        rotationDelta += 2 * Math.PI;
+      }
+
+      currentRotation += fullSpins * 2 * Math.PI + rotationDelta;
       canvas.style.transform = `rotate(${currentRotation}rad)`;
 
       setTimeout(() => {
