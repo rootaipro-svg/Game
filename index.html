@@ -97,7 +97,7 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 520px;
+  min-height: 470px;
   z-index: 2;
 }
 
@@ -115,14 +115,14 @@ h1 {
 
 .wheel-wrap {
   position: relative;
-  width: min(86vw, 470px);
-  height: min(86vw, 470px);
+  width: min(84vw, 430px);
+  height: min(84vw, 430px);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(145deg, #fff2bd, #b8842a);
-  padding: 12px;
+  padding: 10px;
   box-shadow:
     0 0 0 7px rgba(255,230,163,0.18),
     0 22px 44px rgba(0,0,0,0.42);
@@ -189,13 +189,40 @@ canvas {
   border: 1px dashed rgba(255,230,163,0.65);
   border-radius: 24px;
   padding: 18px;
-  min-height: 130px;
+  min-height: 170px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   margin-bottom: 16px;
+}
+
+.score-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.score-item {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 18px;
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.score-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.74);
+  margin-bottom: 6px;
+}
+
+.score-value {
+  font-size: 18px;
+  font-weight: 900;
+  color: #ffe6a3;
 }
 
 .result-title {
@@ -281,23 +308,66 @@ canvas {
 }
 
 @media (max-width: 820px) {
+  body {
+    padding: 10px;
+  }
+
+  .header {
+    margin-bottom: 14px;
+  }
+
+  .badge {
+    padding: 7px 15px;
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-size: 42px;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 17px;
+  }
+
   .game-card {
     grid-template-columns: 1fr;
-    padding: 16px;
+    padding: 12px;
+    border-radius: 26px;
+    gap: 14px;
   }
 
   .wheel-area {
-    min-height: 430px;
+    min-height: 390px;
+  }
+
+  .wheel-wrap {
+    width: min(88vw, 365px);
+    height: min(88vw, 365px);
   }
 
   .center-button {
-    width: 96px;
-    height: 96px;
-    font-size: 20px;
+    width: 86px;
+    height: 86px;
+    font-size: 19px;
+    border-width: 6px;
   }
 
   .pointer {
-    top: 14px;
+    top: 8px;
+    border-left-width: 18px;
+    border-right-width: 18px;
+    border-top-width: 42px;
+  }
+
+  .panel {
+    padding: 18px 14px;
+    border-radius: 24px;
+  }
+
+  .score-card {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -326,9 +396,24 @@ canvas {
   <aside class="panel">
     <h2>طريقة اللعب</h2>
     <p>
-      كل طفل يضغط زر <strong>لفها</strong> مرة واحدة. عندما تتوقف الدوّارة، تظهر الجائزة أو التحدي.
-      يمكنك تعديل الجوائز من داخل الكود حسب رغبتك.
+      كل طفل يضغط زر <strong>لفها</strong> أكثر من مرة. إذا طلع عليه دين يتسجل عليه، وإذا فاز لاحقاً بمبلغ،
+      يتم خصم الدين تلقائياً من الجائزة، والباقي يستلمه. الدين كله مزاح للضحك فقط.
     </p>
+
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-label">إجمالي الفوز</div>
+        <div class="score-value" id="totalWon">0 ريال</div>
+      </div>
+      <div class="score-item">
+        <div class="score-label">الدين الحالي</div>
+        <div class="score-value" id="currentDebt">0 ريال</div>
+      </div>
+      <div class="score-item">
+        <div class="score-label">الصافي</div>
+        <div class="score-value" id="netBalance">0 ريال</div>
+      </div>
+    </div>
 
     <div class="result-box">
       <div class="result-title">النتيجة ستظهر هنا</div>
@@ -337,6 +422,7 @@ canvas {
 
     <div class="actions">
       <button class="secondary-btn" onclick="resetResult()">مسح النتيجة</button>
+      <button class="secondary-btn" onclick="resetAccount()">تصفير حساب المتسابق</button>
     </div>
 
     <div class="note">
@@ -351,24 +437,102 @@ canvas {
     const spinBtn = document.getElementById("spinBtn");
     const resultEl = document.getElementById("result");
 
-    // عدّل الجوائز والأسئلة من هنا فقط
+    // عدّل الجوائز والأسئلة والتحديات من هنا فقط
     const prizes = [
-      { label: "100 ريال", type: "money" },
-      { label: "200 ريال", type: "money" },
-      { label: "300 ريال", type: "money" },
-      { label: "500 ريال", type: "money" },
-      { label: "700 ريال", type: "money" },
-      { label: "1000 ريال", type: "money" },
-      { label: "1500 ريال", type: "money" },
+      { label: "لك 100", type: "winMoney", amount: 100 },
+      { label: "لك 200", type: "winMoney", amount: 200 },
+      { label: "لك 300", type: "winMoney", amount: 300 },
+      { label: "لك 500", type: "winMoney", amount: 500 },
+      { label: "لك 700", type: "winMoney", amount: 700 },
+      { label: "لك 1000", type: "winMoney", amount: 1000 },
+      { label: "لك 1500", type: "winMoney", amount: 1500 },
+      { label: "دين 100", type: "debt", amount: 100 },
+      { label: "دين 200", type: "debt", amount: 200 },
+      { label: "دين 300", type: "debt", amount: 300 },
+      { label: "هدية", type: "gift" },
       { label: "كاكاويات", type: "gift" },
       { label: "كروبي", type: "gift" },
-      { label: "متحدي", type: "challenge" },
-      { label: "سؤال عيد", type: "question" },
-      { label: "تحدي: قل نكتة", type: "challenge" },
-      { label: "تحدي: أنشد بيت شعر", type: "challenge" },
-      { label: "عقوبة خفيفة: 5 قفزات", type: "penalty" },
-      { label: "حظ أوفر", type: "none" },
-      { label: "هدية مفاجأة", type: "gift" }
+      { label: "سؤال", type: "question" },
+      { label: "تحدي", type: "funChallenge" },
+      { label: "فك الدين", type: "clearDebt" },
+      { label: "عقوبة", type: "penalty" },
+      { label: "حظ أوفر", type: "none" }
+    ];
+
+    const funChallenges = [
+      {
+        title: "تحدي صوت الخروف",
+        instruction: "قل: باااااااع مثل الخروف لمدة 5 ثواني بدون ضحك.",
+        reward: "إذا نجح: 200 ريال أو كروبي"
+      },
+      {
+        title: "تحدي المذيع الصغير",
+        instruction: "قدّم نشرة أخبار العيد لمدة 10 ثواني وكأنك مذيع مشهور.",
+        reward: "إذا نجح: 300 ريال"
+      },
+      {
+        title: "تحدي الضحكة الرسمية",
+        instruction: "اضحك ضحكة ملكية محترمة لمدة 5 ثواني.",
+        reward: "إذا نجح: كاكاويات"
+      },
+      {
+        title: "تحدي المشية الغريبة",
+        instruction: "امشِ مثل الروبوت 5 خطوات وارجع مكانك.",
+        reward: "إذا نجح: 200 ريال"
+      },
+      {
+        title: "تحدي لا تضحك",
+        instruction: "يقف أمام طفل آخر، والطفل الآخر يحاول يضحكه لمدة 10 ثواني. إذا ما ضحك يفوز.",
+        reward: "إذا نجح: 300 ريال"
+      },
+      {
+        title: "تحدي تهنئة العيد",
+        instruction: "قل تهنئة عيد بصوت جدّي وكأنك مدير شركة.",
+        reward: "إذا نجح: 200 ريال أو كروبي"
+      },
+      {
+        title: "تحدي اسم العائلة",
+        instruction: "اذكر أسماء 5 من الحاضرين بسرعة خلال 7 ثواني.",
+        reward: "إذا نجح: 300 ريال"
+      },
+      {
+        title: "تحدي التصفيق",
+        instruction: "صفّق بإيقاع جميل والكل يردد بعدك: عيدكم مبارك.",
+        reward: "إذا نجح: كاكاويات + 100 ريال"
+      },
+      {
+        title: "تحدي الجملة الصعبة",
+        instruction: "قل بسرعة: عيد سعيد وسعد سعيد في عيد سعيد. ثلاث مرات.",
+        reward: "إذا نجح: 200 ريال"
+      },
+      {
+        title: "تحدي القائد",
+        instruction: "اختر 3 أطفال وخليهم يرددون خلفك تكبيرة العيد بصوت جميل.",
+        reward: "إذا نجح: 500 ريال"
+      }
+    ];
+
+    const penaltyChallenges = [
+      {
+        title: "عقوبة الضحكة",
+        instruction: "اضحك ضحكة كرتونية لمدة 5 ثواني.",
+        reward: "بعد التنفيذ: يسقط نصف الدين أو يحصل على كروبي"
+      },
+      {
+        title: "عقوبة السلام الكبير",
+        instruction: "سلّم على 3 أشخاص وقل لكل واحد: عيدك مبارك يا بطل.",
+        reward: "بعد التنفيذ: يحصل على 100 ريال"
+      },
+      {
+        title: "عقوبة القفز",
+        instruction: "اعمل 5 قفزات خفيفة وقل بعدها: تم التنفيذ يا لجنة التحكيم.",
+        reward: "بعد التنفيذ: كاكاويات"
+      },
+      {
+        title: "عقوبة الاعتذار للحظ",
+        instruction: "قل للدوّارة: سامحيني يا دوّارة، المرة الجاية اختاري لي 1500.",
+        reward: "بعد التنفيذ: يعاد له الدور بعد طفلين"
+      }
     ];
 
     const eidQuestions = [
@@ -376,49 +540,43 @@ canvas {
         question: "كم عدد أيام عيد الأضحى مع أيام التشريق؟",
         options: "أ) يوم واحد  |  ب) 4 أيام  |  ج) 7 أيام",
         answer: "ب) 4 أيام",
-        reward: "الجائزة: 300 ريال أو كيس كاكاويات"
+        reward: "إذا أجاب صح: 300 ريال أو كيس كاكاويات"
       },
       {
         question: "ماذا نقول عند تهنئة الناس بالعيد؟",
         options: "أ) تقبل الله منا ومنكم  |  ب) تصبح على خير  |  ج) صباح الشتاء",
         answer: "أ) تقبل الله منا ومنكم",
-        reward: "الجائزة: 200 ريال"
+        reward: "إذا أجاب صح: 200 ريال"
       },
       {
         question: "ما اسم الصلاة التي نصليها صباح العيد؟",
         options: "أ) صلاة العيد  |  ب) صلاة الكسوف  |  ج) صلاة الاستسقاء",
         answer: "أ) صلاة العيد",
-        reward: "الجائزة: 300 ريال"
+        reward: "إذا أجاب صح: 300 ريال"
       },
       {
         question: "ما الشيء الجميل الذي يكثر في العيد بين الأهل والأطفال؟",
         options: "أ) الخصام  |  ب) العيدية والفرحة  |  ج) النوم فقط",
         answer: "ب) العيدية والفرحة",
-        reward: "الجائزة: كروبي + 100 ريال"
+        reward: "إذا أجاب صح: كروبي + 100 ريال"
       },
       {
         question: "ما الحيوان المرتبط بشعيرة الأضحية في عيد الأضحى؟",
         options: "أ) الخروف أو الإبل أو البقر  |  ب) السمك  |  ج) الطيور فقط",
         answer: "أ) الخروف أو الإبل أو البقر",
-        reward: "الجائزة: 500 ريال"
+        reward: "إذا أجاب صح: 500 ريال"
       },
       {
         question: "أكمل العبارة: عيدكم مبارك و...",
         options: "أ) كل عام وأنتم بخير  |  ب) لا تلعبوا  |  ج) انتهى العيد",
         answer: "أ) كل عام وأنتم بخير",
-        reward: "الجائزة: 200 ريال أو كاكاويات"
-      },
-      {
-        question: "ما أفضل شيء تفعله في العيد مع أهلك؟",
-        options: "أ) السلام والزيارة والابتسامة  |  ب) الزعل  |  ج) الجلوس وحدك",
-        answer: "أ) السلام والزيارة والابتسامة",
-        reward: "الجائزة: 300 ريال"
+        reward: "إذا أجاب صح: 200 ريال أو كاكاويات"
       },
       {
         question: "ما معنى العيدية؟",
         options: "أ) هدية أو مبلغ يفرح به الأطفال  |  ب) واجب مدرسي  |  ج) اسم لعبة",
         answer: "أ) هدية أو مبلغ يفرح به الأطفال",
-        reward: "الجائزة: 100 ريال + كروبي"
+        reward: "إذا أجاب صح: 100 ريال + كروبي"
       }
     ];
 
@@ -435,6 +593,8 @@ canvas {
     const segmentAngle = (2 * Math.PI) / prizes.length;
     let currentRotation = 0;
     let spinning = false;
+    let totalWon = 0;
+    let currentDebt = 0;
 
     function drawWheel() {
       ctx.clearRect(0, 0, size, size);
@@ -462,8 +622,8 @@ canvas {
         if (["#0f6b61", "#c94444", "#277da1", "#7b2cbf", "#577590", "#f94144"].includes(colors[index % colors.length])) {
           ctx.fillStyle = "#ffffff";
         }
-        ctx.font = "bold 28px Tahoma";
-        wrapText(ctx, prize.label, radius - 28, 8, 135, 32);
+        ctx.font = "bold 24px Tahoma";
+        wrapText(ctx, prize.label, radius - 26, 8, 115, 30);
         ctx.restore();
       });
 
@@ -552,11 +712,75 @@ canvas {
       }
     }
 
+    function formatRiyal(amount) {
+      return amount + " ريال";
+    }
+
+    function updateScoreboard() {
+      document.getElementById("totalWon").textContent = formatRiyal(totalWon);
+      document.getElementById("currentDebt").textContent = formatRiyal(currentDebt);
+      document.getElementById("netBalance").textContent = formatRiyal(totalWon - currentDebt);
+    }
+
+    function resetAccount() {
+      if (spinning) return;
+      totalWon = 0;
+      currentDebt = 0;
+      updateScoreboard();
+      resultEl.innerHTML = "تم تصفير حساب المتسابق";
+    }
+
     function showPrizeResult(prize) {
+      if (prize.type === "winMoney") {
+        const oldDebt = currentDebt;
+        const deducted = Math.min(prize.amount, currentDebt);
+        const cashToReceive = prize.amount - deducted;
+        currentDebt -= deducted;
+        totalWon += cashToReceive;
+        updateScoreboard();
+
+        resultEl.innerHTML = `
+          <div style="font-size:18px; color:#e8fffb; margin-bottom:6px;">مبروك يا بطل</div>
+          <div style="font-size:34px; color:#ffe6a3; font-weight:900; margin-bottom:8px;">فزت بـ ${formatRiyal(prize.amount)}</div>
+          <div style="font-size:15px; line-height:1.9; color:#ffffff; background:rgba(255,255,255,0.10); border-radius:14px; padding:9px 10px;">
+            ${oldDebt > 0
+              ? `كان عليك دين ${formatRiyal(oldDebt)}، تم خصم ${formatRiyal(deducted)}، وتستلم الآن ${formatRiyal(cashToReceive)}.`
+              : `لا يوجد عليك دين، تستلم ${formatRiyal(cashToReceive)} كاملة.`}
+          </div>
+        `;
+        return;
+      }
+
+      if (prize.type === "debt") {
+        currentDebt += prize.amount;
+        updateScoreboard();
+        resultEl.innerHTML = `
+          <div style="font-size:18px; color:#ffffff; margin-bottom:6px;">يا ساتر! طلع عليك دين عيد</div>
+          <div style="font-size:34px; color:#ffb4a8; font-weight:900; margin-bottom:8px;">دين ${formatRiyal(prize.amount)}</div>
+          <div style="font-size:15px; line-height:1.9; color:#ffffff; background:rgba(255,255,255,0.10); border-radius:14px; padding:9px 10px;">
+            تم تسجيل الدين عليك. إذا فزت لاحقاً بأي مبلغ، سيتم خصمه تلقائياً من جائزتك.
+          </div>
+        `;
+        return;
+      }
+
+      if (prize.type === "clearDebt") {
+        const cleared = currentDebt;
+        currentDebt = 0;
+        updateScoreboard();
+        resultEl.innerHTML = `
+          <div style="font-size:30px; color:#ffe6a3; font-weight:900; margin-bottom:8px;">فك الدين</div>
+          <div style="font-size:16px; line-height:1.9; color:#ffffff; background:rgba(255,230,163,0.14); border-radius:14px; padding:9px 10px;">
+            ${cleared > 0 ? `تم مسح دينك وقدره ${formatRiyal(cleared)}. رجعت حر يا بطل.` : `ما عليك دين أصلاً. خذ تصفيق من الجمهور.`}
+          </div>
+        `;
+        return;
+      }
+
       if (prize.type === "question") {
         const q = eidQuestions[Math.floor(Math.random() * eidQuestions.length)];
         resultEl.innerHTML = `
-          <div style="font-size:22px; color:#ffe6a3; margin-bottom:10px;">${prize.label}</div>
+          <div style="font-size:22px; color:#ffe6a3; margin-bottom:10px;">سؤال عيد</div>
           <div style="font-size:17px; line-height:1.9; color:#ffffff; margin-bottom:8px;">${q.question}</div>
           <div style="font-size:15px; line-height:1.8; color:#e8fffb; margin-bottom:8px;">${q.options}</div>
           <div style="font-size:15px; line-height:1.8; color:#ffe6a3; margin-bottom:8px;">الإجابة الصحيحة: ${q.answer}</div>
@@ -565,18 +789,31 @@ canvas {
         return;
       }
 
-      if (prize.type === "challenge") {
+      if (prize.type === "funChallenge") {
+        const c = funChallenges[Math.floor(Math.random() * funChallenges.length)];
         resultEl.innerHTML = `
-          <div style="font-size:30px; color:#ffe6a3; margin-bottom:8px;">${prize.label}</div>
-          <div style="font-size:16px; line-height:1.8; color:#ffffff;">إذا نفّذ التحدي بنجاح: الجائزة 200 ريال أو كاكاويات</div>
+          <div style="font-size:24px; color:#ffe6a3; font-weight:900; margin-bottom:8px;">${c.title}</div>
+          <div style="font-size:16px; line-height:1.9; color:#ffffff; margin-bottom:8px;">${c.instruction}</div>
+          <div style="font-size:15px; line-height:1.8; color:#ffffff; background:rgba(255,230,163,0.14); border-radius:14px; padding:8px 10px;">${c.reward}</div>
         `;
         return;
       }
 
       if (prize.type === "penalty") {
+        const p = penaltyChallenges[Math.floor(Math.random() * penaltyChallenges.length)];
         resultEl.innerHTML = `
-          <div style="font-size:28px; color:#ffe6a3; margin-bottom:8px;">${prize.label}</div>
-          <div style="font-size:16px; line-height:1.8; color:#ffffff;">بعد تنفيذ العقوبة الخفيفة: يحصل على كروبي</div>
+          <div style="font-size:24px; color:#ffe6a3; font-weight:900; margin-bottom:8px;">${p.title}</div>
+          <div style="font-size:16px; line-height:1.9; color:#ffffff; margin-bottom:8px;">${p.instruction}</div>
+          <div style="font-size:15px; line-height:1.8; color:#ffffff; background:rgba(255,230,163,0.14); border-radius:14px; padding:8px 10px;">${p.reward}</div>
+        `;
+        return;
+      }
+
+      if (prize.type === "gift") {
+        resultEl.innerHTML = `
+          <div style="font-size:18px; color:#e8fffb; margin-bottom:6px;">هدية عيد</div>
+          <div style="font-size:34px; color:#ffe6a3; font-weight:900; margin-bottom:8px;">${prize.label}</div>
+          <div style="font-size:15px; line-height:1.8; color:#ffffff;">الهدايا لا تخصم من الدين. يستلمها فوراً.</div>
         `;
         return;
       }
@@ -584,13 +821,15 @@ canvas {
       if (prize.type === "none") {
         resultEl.innerHTML = `
           <div style="font-size:30px; color:#ffe6a3; margin-bottom:8px;">حظ أوفر</div>
-          <div style="font-size:16px; line-height:1.8; color:#ffffff;">يعاد له الدور بعد طفلين حتى لا يزعل</div>
+          <div style="font-size:16px; line-height:1.8; color:#ffffff;">لا تزعل. لك محاولة ثانية بعد طفلين.</div>
         `;
         return;
       }
 
       resultEl.innerHTML = prize.label;
     }
+
+    updateScoreboard();
 
     function launchConfetti() {
       const confettiColors = ["#ffe6a3", "#ffffff", "#d7a449", "#43aa8b", "#f94144"];
